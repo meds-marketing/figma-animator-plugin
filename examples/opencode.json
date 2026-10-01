@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "figma-animator": {
+      "type": "remote",
+      "url": "https://figma.meds-marketing.dev/mcp",
+      "enabled": true
+    }
+  }
+}

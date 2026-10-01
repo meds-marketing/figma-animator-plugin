@@ -1,0 +1,27 @@
+{
+  "name": "figma-animator",
+  "version": "0.1.2",
+  "description": "Review-first Figma animation with signed-in approval gates.",
+  "author": {
+    "name": "Meds Marketing"
+  },
+  "homepage": "https://figma.meds-marketing.dev/mcp",
+  "repository": "https://github.com/meds-marketing/figma-animator-plugin",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Figma Animator",
+    "shortDescription": "Review and animate frames",
+    "longDescription": "Find Figma frames, review their start and end states, approve image analysis, review the exact video prompt, and generate a 15-second 1080P video using recorded browser approvals.",
+    "developerName": "Meds Marketing",
+    "category": "Creativity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": "Animate a Figma frame with frame review and prompt approval.",
+    "logo": "./assets/icon.svg",
+    "composerIcon": "./assets/icon.svg"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "figma-animator": {
+      "type": "streamable-http",
+      "url": "https://figma.meds-marketing.dev/mcp"
+    }
+  }
+}

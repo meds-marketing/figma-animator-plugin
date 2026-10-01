@@ -1,0 +1,13 @@
+{
+  "name": "figma-animator",
+  "owner": {
+    "name": "Meds Marketing"
+  },
+  "plugins": [
+    {
+      "name": "figma-animator",
+      "source": "./plugins/figma-animator",
+      "description": "Review and animate Figma frames with recorded approvals."
+    }
+  ]
+}

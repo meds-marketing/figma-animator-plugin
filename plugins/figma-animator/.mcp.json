@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "figma-animator": {
+      "type": "http",
+      "url": "https://figma.meds-marketing.dev/mcp"
+    }
+  }
+}
