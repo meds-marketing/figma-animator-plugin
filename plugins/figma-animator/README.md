@@ -11,9 +11,9 @@ This desktop package connects to the existing `.dev` MCP and includes the `anima
 
 ## Build archives
 
-Run `python3 scripts/package-plugin.py` from the repository to create `public/plugins/figma-animator-desktop.zip`.
+Run `python3 scripts/package-plugin.py` from the repository to create `dist/figma-animator-desktop.zip`.
 
-For ChatGPT web, first verify the registered Figma Animator app's technical ID and its MCP endpoint. Run `python3 scripts/package-plugin.py --app-id <current-asdk_app-ID>` to create `public/plugins/figma-animator.zip`. This web archive includes `.app.json` and the skill, excludes both MCP configuration files and Claude compatibility metadata, and points the OpenAI manifest at the registered app. A mapping does not create that app or grant permissions. Do not use an app ID whose detail page returns Plugin not found.
+For ChatGPT web, first verify the registered Figma Animator app's technical ID and its MCP endpoint. Run `python3 scripts/package-plugin.py --app-id <current-asdk_app-ID>` to create `dist/figma-animator.zip`. This web archive includes `.app.json` and the skill, excludes both MCP configuration files and Claude compatibility metadata, and points the OpenAI manifest at the registered app. A mapping does not create that app or grant permissions. Do not use an app ID whose detail page returns Plugin not found.
 
 ## Approval contract
 

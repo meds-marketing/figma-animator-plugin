@@ -46,8 +46,8 @@ Use the actual technical ID (32 hexadecimal characters after `asdk_app_`). The r
 
 1. Find the named frame, preferring an exact top-level match.
 2. Export the full frame and a headline-only start frame; build the comparison with the headline on the left.
-3. Present the actual images and signed-in review link. Wait for the user's recorded approval before analysis.
-4. Analyze the approved comparison and present the exact animation prompt.
+3. Return inline review images without uploading review assets to GCS. Present the exact GCS and Fal destinations. Wait for the user to approve storage upload and analysis through the embedded review or signed-in review link.
+4. Upload the approved images and plan to the displayed GCS destination, analyze the comparison with Fal, and present the exact animation prompt.
 5. Wait for the user's recorded generation approval.
 6. Generate with `minimax/h3-max/image-to-video`, duration **15 seconds**, resolution **1080P**, headline image as start and full frame as end.
 7. Store the completed video in the configured Google Cloud Storage and present it.
@@ -70,3 +70,5 @@ Produces `dist/figma-animator-desktop.zip`. Packaging uses an explicit file allo
 - [OpenCode MCP](https://opencode.ai/docs/mcp-servers/)
 
 Client installation and authenticated end-to-end generation must be checked in the target client. Publishing this repository does not install or register the plugin anywhere.
+
+Temporary unapproved reviews expire after 30 minutes and are lost on service restart. A missing review requires fresh preparation and approval. Persisted approved plans retain the service's generation recovery.
