@@ -17,8 +17,4 @@ For ChatGPT web, first verify the registered Figma Animator app's technical ID a
 
 ## Approval contract
 
-Preparation returns an authenticated `/mcp/review/<planId>` URL. Open it, inspect the frames, and approve analysis. Return to the agent. After analysis, open the same page to inspect and approve the exact video prompt. The page records approval only; it never makes a Fal request. Typed chat approval and caller-supplied `confirmed:true` cannot create these records.
-
-Receipts identify the signed-in account, stage, timestamp, and digest of the reviewed assets/settings (including the exact prompt for generation). They remain in the owner-scoped GCS plan JSON. The server rejects mismatches, missing approvals, expired plans, and duplicate claims. Browser authentication and CSRF checks restrict the approval route; they do not cryptographically distinguish a human from automation using the same browser session. The skill forbids agents from approving on the user's behalf.
-
-Client automatic reviews still apply. Installing this plugin is not authorization to bypass a rejected export. No provider credentials are included.
+Preparation returns actual review images. The agent inspects them and calls `animator_draft_animation` with separate `reviewPlan` and `generationPrompt` fields. Review the frames and exact prompt, then approve upload and paid video generation through the inline review or authenticated review link. No Fal analysis is required. Every edit clears approval. Generation always uses 15 seconds, 1080P, and disabled prompt expansion. Client approval policies still apply.

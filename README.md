@@ -44,13 +44,11 @@ Use the actual technical ID (32 hexadecimal characters after `asdk_app_`). The r
 
 ## Animation workflow
 
-1. Find the named frame, preferring an exact top-level match.
-2. Export the full frame and a headline-only start frame; build the comparison with the headline on the left.
-3. Return inline review images without uploading review assets to GCS. Present the exact GCS and Fal destinations. Wait for the user to approve storage upload and analysis through the embedded review or signed-in review link.
-4. Upload the approved images and plan to the displayed GCS destination, analyze the comparison with Fal, and present the exact animation prompt.
-5. Wait for the user's recorded generation approval.
-6. Generate with `minimax/h3-max/image-to-video`, duration **15 seconds**, resolution **1080P**, headline image as start and full frame as end.
-7. Store the completed video in the configured Google Cloud Storage and present it.
+1. Find the exact frame and export headline-only start/full-design end images.
+2. Agent inspects the comparison and drafts a concise `reviewPlan` and separate clean `generationPrompt` through `animator_draft_animation`, bound to the exported comparison digest and 15-second / 1080P settings. No Fal analysis or upload.
+3. Show actual frames, exact H3 prompt and GCS/Fal destinations. Wait for recorded user approval of upload and paid video generation.
+4. Generate with `minimax/h3-max/image-to-video`, headline image first/full frame last, 15 seconds, 1080P, prompt expansion disabled.
+5. Save the completed video to GCS and present it. Any draft edit invalidates approval; submitted jobs cannot be edited or automatically resubmitted.
 
 The skill supplies agent guidance. The hosted service validates approval receipts; client security policies also apply. Installing a plugin cannot override a client's automatic review. Never manufacture approval or automate the approval button for the user.
 
