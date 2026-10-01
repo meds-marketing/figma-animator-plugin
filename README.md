@@ -45,7 +45,7 @@ Use the actual technical ID (32 hexadecimal characters after `asdk_app_`). The r
 ## Animation workflow
 
 1. Find the exact frame and export headline-only start/full-design end images.
-2. Agent inspects the comparison and drafts a concise `reviewPlan` and separate clean `generationPrompt` through `animator_draft_animation`, bound to the exported comparison digest and 15-second / 1080P settings. No Fal analysis or upload.
+2. Open animator_show_animation_review once after preparation. The single panel follows drafting, approval and generation; other workflow tools return data only. Agent inspects the comparison and drafts a concise `reviewPlan` and separate clean `generationPrompt` through `animator_draft_animation`, bound to the exported comparison digest and 15-second / 1080P settings. No Fal analysis or upload.
 3. Show actual frames, exact H3 prompt and GCS/Fal destinations. Wait for recorded user approval of upload and paid video generation.
 4. Generate with `minimax/h3-max/image-to-video`, headline image first/full frame last, 15 seconds, 1080P, prompt expansion disabled.
 5. Save the completed video to GCS and present it. Any draft edit invalidates approval; submitted jobs cannot be edited or automatically resubmitted.
