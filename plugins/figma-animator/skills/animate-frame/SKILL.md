@@ -7,6 +7,8 @@ description: Discover Figma variants, compose start frames, draft motion plans, 
 
 Build a workflow from the user's intent. Headline-only is a default composition, not a mandatory workflow. One animation request can hold one or many independently reviewed variants.
 
+The client can authenticate with personal OAuth or an administrator-provisioned organization key. Organization keys bind all users to the configured shared owner and quota. Use the client's existing connection; do not ask users for Google authorization when a shared key is configured, and never ask them to paste keys into chat. The `/mcp/tools` endpoint and local stdio bridge have no UI dependency: present images and exact prompts in ordinary chat. Credential setup is documented in `../../ORG-AUTH.md`; authentication does not approve exports or paid generation.
+
 ## Open, resume, and configure the workspace
 
 - Open the library with figma_media_browser. Use animator_open_workspace with empty arguments to open Animations and history without creating a request. Both tools have native entrypoints in supporting hosts; ordinary MCP clients can call them directly.
@@ -43,6 +45,22 @@ Call animator_draft_request ONCE with requestId, the current request expectedRev
 
 - reviewPlan: concise user-facing choreography, reveal order, timing, product emphasis and final hold.
 - generationPrompt: direct, complete visual instructions for H3, adapted to the actual start/end composition and orientation. Describe the 15-second sequence and readable ending. Preserve the wording, typography, labels and final composition. Do not promise perfect text fidelity. Include no reasoning sections, serialized analysis, tool transcripts, approval instructions or agent commentary.
+
+### First-frame fidelity and default timing
+
+Inspect every actual exported first/last image pair before drafting. Treat the first image as the exact time-zero composition, not a mood reference. Preserve the visible text's position, size, line breaks, typography, background and existing objects. Do not infer a centered or vertically centered headline from the headline-only preset. Removing other layers does not imply moving the remaining headline.
+
+When an element occupies the same position in both images, keep it locked there. Do not add an opening glide, scale change, camera push, reframe or recentering. Describe movement only when the inspected pair supports that change and the user requested or approved the choreography. If the image cannot be inspected, retrieve the actual image before drafting; do not substitute a frame name, generic template or guessed layout.
+
+Unless the user explicitly requests another timeline, finish all major reveals and transitions by **5 seconds** of the fixed 15-second output, then hold the complete end design from **5–15 seconds**. Use this pacing as a starting point, adapting overlap and reveal order to the actual design:
+
+- 0–0.5s: retain the supplied first frame exactly, with the existing headline stationary.
+- 0.5–2s: reveal the primary product or artwork in its end-frame position.
+- 2–3.5s: reveal supporting copy and secondary imagery.
+- 3.5–5s: finish remaining icons, brand marks and call to action.
+- 5–15s: hold the complete supplied end frame, stable and legible.
+
+Use image-relative wording such as "Keep the headline exactly where it appears in the supplied first frame; reveal the remaining artwork in its supplied end-frame positions." Do not describe an unverified coordinate or alignment. Keep reviewPlan and generationPrompt consistent about positions, reveal order and timing. Preserve these rules across ratios while inspecting each actual layout separately. A user's explicit timing or movement direction takes precedence over the default.
 
 Reuse a shared creative direction across variants, but adapt reveals, positions and framing to each exported layout. Never submit the comparison as a first/end image. No Fal analysis request is needed.
 
@@ -90,10 +108,18 @@ background. Selecting a containing group includes its other descendants.
 
 A text substring match keeps the entire atomic text node. If “Modafinil” shares
 a node with other words, do not claim the resulting frame contains only that
-word: explain the node boundary and ask for a separate source text layer when
-necessary. After every composition change inspect the actual comparison,
+word: explain the node boundary and offer the paid Ideogram editing path below
+when the user needs a change within that text node. After every composition change inspect the actual comparison,
 redraft the motion prompt and obtain fresh generation confirmation.
 
 ## Library and panel behavior
 
 Library shows actual document pages, top-level artboard sets, and their available aspect ratios. Use `figma_list_animation_frames` with `topLevelOnly: true` for Library discovery; use bounded `frameIds` with `figma_list_ad_sets` for preview reads. Never invent missing variants. The panel keeps a bounded inline height and scrolls internally. Reuse its existing request and do not open another panel for routine status updates. Custom first-frame requests require actual per-ratio layer inspection, revised comparisons and prompts, and fresh approval.
+
+## First frames that need design changes
+
+Use layer composition when the request only keeps or hides existing objects. If it needs rewriting part of an atomic text node, moving or redrawing artwork, or another change to the exported design, use `animator_edit_first_frame` instead. Inspect the actual exported design and construct an Ideogram editing prompt from the user intent. Specify what changes, exact replacement text, what stays fixed, and that the canvas, proportions, typography and unaffected artwork must be preserved. Show the exact prompt and explain that the exported private Figma frame will be sent to Fal's `ideogram/v4.5/edit` for a paid image edit. Obtain the user's confirmation before setting `confirmed:true`; approval to export or generate a video is not approval for this separate image edit.
+
+Pass the item's `planId`, current plan `expectedRevision`, and approved `prompt`. The tool exports the full original frame and uses high precision, medium quality, one image and `image_size:auto`. Exact pixel dimensions are checked; same-proportion provider downscales are restored to the input size and marked as normalized. A changed aspect ratio is rejected. While pending, repeat the exact same plan, revision and prompt to inspect the existing job. A submitting/unknown result must not be retried with a fresh operation.
+
+After completion, read the existing request and inspect the actual edited first/full last comparison. Draft fresh motion plans and exact H3 prompts, then obtain fresh video-generation approval. The Figma source document remains unchanged.

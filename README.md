@@ -100,3 +100,9 @@ Start a new chat or reconnect the MCP if the current chat still has the old tool
 For Claude Code, use `claude plugin marketplace update figma-animator` followed by `claude plugin update figma-animator@figma-animator`, then restart the session if its tool catalog remains stale.
 
 Release maintainers synchronize portable and compatibility manifests, validate and rebuild the ZIP, verify the matching hosted MCP deployment, commit the allowlisted distribution files, and publish a matching version tag and ZIP release asset. Do not include backend source, credentials, app IDs from another account, or private design media.
+
+## Organization authorization (0.3.3)
+
+An administrator can provision a dedicated API key per client. Use `/mcp/shared` for the interactive workspace and `/mcp/tools` for standard tools and media without extensions. Read [organization setup, identity and client limits](plugins/figma-animator/ORG-AUTH.md). Claude header authentication depends on its beta availability; ChatGPT shared connections depend on the target surface and workspace controls.
+
+Build `python3 scripts/package-plugin.py --org-auth` or download `figma-animator-org.zip` for the workflow skill, client examples and local stdio bridge without a bundled OAuth dependency. Configure the managed connection separately. Provision credentials privately; no keys are included in the package or repository. The default desktop package continues to use OAuth.

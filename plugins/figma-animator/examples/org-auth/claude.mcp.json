@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "figma-animator-org": {
+      "type": "http",
+      "url": "https://figma.meds-marketing.dev/mcp/shared",
+      "headers": { "Authorization": "Bearer ${FIGMA_ANIMATOR_API_KEY}" },
+      "timeout": 1800000
+    }
+  }
+}

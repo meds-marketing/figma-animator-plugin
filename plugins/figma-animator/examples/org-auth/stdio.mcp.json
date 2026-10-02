@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "figma-animator-org": {
+      "command": "node",
+      "args": ["/absolute/path/to/figma-animator/bridge/mcp-stdio.cjs"],
+      "env": { "FIGMA_ANIMATOR_API_KEY_FILE": "/private/path/to/figma-animator.key.txt" }
+    }
+  }
+}

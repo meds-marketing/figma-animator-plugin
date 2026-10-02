@@ -1,7 +1,9 @@
 # Figma Animator plugin
 
 Version 0.3.0 adds a Figma library, a saved animation workspace, frame references, preferences and responsive host styling. Sidebar/thread entrypoints and composer mentions depend on the connected host. Local manifest changes do not publish or update the hosted plugin binding. See [workspace contracts](../../docs/mcp-workspace.md).
-This desktop package connects to the existing `.dev` MCP and includes the `animate-frame` skill. Sign in with the MCP's Google OAuth flow using an allowed meds.com or bluechew.com account. Previews and approval stay in the inline workspace in ChatGPT, or ordinary chat in tools-only clients.
+This desktop package connects to the existing `.dev` MCP and includes the `animate-frame` skill. The default package uses Google OAuth. Organization connections can use administrator-provisioned API keys with `/mcp/shared` or `/mcp/tools`, without individual Google authorization. See [organization setup and client limits](ORG-AUTH.md). Previews and approval stay in the inline workspace in ChatGPT, or ordinary chat in tools-only clients.
+
+Version 0.3.3 adds independently revocable organization credentials, a tools-only endpoint, client configuration examples and a dependency-free local bridge. Build `python3 scripts/package-plugin.py --org-auth` for the skill and bridge without a bundled OAuth dependency. Configure the administrator-managed connection separately before using that package. The ChatGPT web ZIP retains its existing registered app identity; its authentication must be configured in the workspace.
 
 ## Package formats
 

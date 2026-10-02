@@ -1,0 +1,4 @@
+[mcp_servers.figma-animator-org]
+url = "https://figma.meds-marketing.dev/mcp/shared"
+bearer_token_env_var = "FIGMA_ANIMATOR_API_KEY"
+tool_timeout_sec = 1800

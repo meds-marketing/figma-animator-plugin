@@ -1,6 +1,6 @@
 {
   "name": "figma-animator",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Browse Figma variants and resume exact-prompt animation reviews in a native workspace.",
   "author": {
     "name": "Meds Marketing"
