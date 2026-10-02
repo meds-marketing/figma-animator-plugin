@@ -18,3 +18,7 @@ For ChatGPT web, first verify the registered Figma Animator app's technical ID a
 ## Approval contract
 
 Preparation returns actual review images. The agent inspects them and calls `animator_draft_animation` with separate `reviewPlan` and `generationPrompt` fields. Review the frames and exact prompt, then approve upload and paid video generation through the inline review or authenticated review link. No Fal analysis is required. Every edit clears approval. Generation always uses 15 seconds, 1080P, and disabled prompt expansion. Client approval policies still apply.
+
+## Animation capabilities
+
+Version 0.2.0 adds explicit layer/background composition, family discovery across actual ratios, one-or-many-item requests, selected-item approval, and one live request panel. The MCP enforces image/prompt revisions and durable execution. See the animate-frame skill for the tool contracts. Client approval policies still apply.

@@ -1,7 +1,7 @@
 {
   "name": "figma-animator",
-  "version": "0.1.6",
-  "description": "Review-first Figma animation with signed-in approval gates.",
+  "version": "0.2.0",
+  "description": "Compose and review Figma animations across variants with exact-prompt approval.",
   "author": {
     "name": "Meds Marketing"
   },
@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "Figma Animator",
     "shortDescription": "Review and animate frames",
-    "longDescription": "Inspect exported Figma start/end images, draft a motion plan and clean H3 prompt, approve the exact images and prompt, and generate a 15-second 1080P video.",
+    "longDescription": "Discover related Figma frames, compose start images from selected layers, draft exact H3 prompts and approve selected 15-second 1080P animations in one live panel.",
     "developerName": "Meds Marketing",
     "category": "Creativity",
     "capabilities": [
@@ -20,7 +20,7 @@
       "Read",
       "Write"
     ],
-    "defaultPrompt": "Animate a Figma frame with frame review and prompt approval.",
+    "defaultPrompt": "Animate a Figma ad across its available aspect ratios with reviewed compositions and exact prompts.",
     "logo": "./assets/icon.svg",
     "composerIcon": "./assets/icon.svg"
   }

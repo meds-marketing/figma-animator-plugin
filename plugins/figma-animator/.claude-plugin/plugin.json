@@ -1,7 +1,7 @@
 {
   "name": "figma-animator",
-  "version": "0.1.6",
-  "description": "Review-first Figma animation with signed-in approval gates.",
+  "version": "0.2.0",
+  "description": "Compose and review Figma animations across variants with exact-prompt approval.",
   "author": {
     "name": "Meds Marketing"
   },

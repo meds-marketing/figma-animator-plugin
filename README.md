@@ -44,11 +44,12 @@ Use the actual technical ID (32 hexadecimal characters after `asdk_app_`). The r
 
 ## Animation workflow
 
-1. Find the exact frame and export headline-only start/full-design end images.
-2. Open animator_show_animation_review once after preparation. The single panel follows drafting, approval and generation; other workflow tools return data only. Agent inspects the comparison and drafts a concise `reviewPlan` and separate clean `generationPrompt` through `animator_draft_animation`, bound to the exported comparison digest and 15-second / 1080P settings. No Fal analysis or upload.
-3. Show actual frames, exact H3 prompt and GCS/Fal destinations. Wait for recorded user approval of upload and paid video generation.
-4. Generate with `minimax/h3-max/image-to-video`, headline image first/full frame last, 15 seconds, 1080P, prompt expansion disabled.
-5. Save the completed video to GCS and present it. Any draft edit invalidates approval; submitted jobs cannot be edited or automatically resubmitted.
+1. Discover actual frames and aspect-ratio variants, resolve version ambiguity, and inspect exportable layers.
+2. Organize the selected frames in one request. Prepare each full-canvas start/end pair with explicit layers and background; headline-only is the default composition.
+3. Open `animator_show_animation_review` once for the request. The panel follows all items through drafting, selected approval and generation. Other workflow tools return data only. Inspect each exported comparison and draft separate `reviewPlan` and clean `generationPrompt` fields with its current revision, image digest, and fixed 15-second / 1080P settings. No Fal analysis or upload.
+4. Show exact images, H3 prompts, selected generation count and GCS/Fal destinations. Wait for user approval in the panel or signed-in request review page. Each selected item receives its own bound approval receipt.
+5. Execute approved items through `animator_generate_request`. The worker supplies each full-canvas start as the first image and full design as the last, with `minimax/h3-max/image-to-video`, 15 seconds, 1080P and disabled prompt expansion. Durable coordination defaults to two active jobs per request.
+6. Present saved MP4s with measured dimensions and verification status. Partial successes remain available. Editing an item invalidates its approval; submitted membership and paid jobs are immutable and uncertain submissions are never automatically repeated.
 
 The skill supplies agent guidance. The hosted service validates approval receipts; client security policies also apply. Installing a plugin cannot override a client's automatic review. Never manufacture approval or automate the approval button for the user.
 

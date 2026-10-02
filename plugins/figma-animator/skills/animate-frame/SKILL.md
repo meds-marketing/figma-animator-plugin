@@ -1,26 +1,44 @@
 ---
 name: animate-frame
-description: Find, review and animate a Figma frame using an agent-authored motion plan and an approved H3 prompt.
+description: Discover Figma variants, compose start frames, draft motion plans, and execute approved H3 animations in one live request panel.
 ---
 
-# Animate a Figma frame
+# Figma animation capabilities
 
-1. Find the frame using figma_search_frames. Prefer an exact name and top-level frame. Saved animation projects are unrelated to frame discovery. Ask the user to choose if multiple plausible matches remain.
-2. Call animator_prepare_frames with the chosen fileUrl, pageId and frameId. Inspect the returned actual comparison image: LEFT is the headline-only start, RIGHT the full design end. If the image cannot be inspected or displayed, stop and report that limitation. Do not invent visual details.
-3. Call animator_show_animation_review ONCE for the returned planId to open the single animation panel. Preparation, drafting and generation return data only. That panel follows the plan automatically and changes as you work. Never repeat preparation for the same selected frame or open another panel for each stage. Then reason about the animation yourself. Do not send the images to Fal for analysis. Draft against these exported images and fixed duration 15 seconds / resolution 1080P.
-4. Call animator_draft_animation with planId, imageDigest from imageDigests.comparison, duration:15, resolution:"1080P", and TWO separate strings:
-   - reviewPlan: concise user-facing choreography, reveal order, timing and final hold. Describe the visible elements and the transition between the actual images.
-   - generationPrompt: direct visual instructions for H3. Start from the supplied headline-only image and finish at the supplied full-design image. Include 15-second timing, restrained product motion, sequential supporting-copy reveals, readable final hold, and preservation of composition, typography, wording and labels. No reasoning traces, analysis response, JSON, tool transcripts, approval instructions or agent commentary. Do not promise perfect text fidelity.
-5. Show the actual comparison, reviewPlan, EXACT generationPrompt, fixed settings and exact GCS storage/Fal generation destinations. END the response and wait for user approval via the inline review button or authenticated review link. Drafting uploads nothing and makes no Fal request. Generation approval covers the displayed assets, storage upload and paid video request.
-6. Never invoke animator_approve_review, browser approval endpoints, or click approval on behalf of the user. confirmed:true alone is not approval. Read animator_get_animation_plan and verify approvals.generation before calling animator_generate_animation with planId and confirmed:true.
-7. Generation uses image_url=headline start and end_image_url=full design, minimax/h3-max/image-to-video, 15 seconds and 1080P, with prompt expansion disabled. Never substitute the comparison image or modify the approved prompt.
-8. To revise before submission, call animator_draft_animation again. Every edit invalidates existing approval; display and approve the new exact prompt again. Submitted plans cannot be edited or resubmitted.
-9. The existing inline panel polls status internally. Do not repeatedly call status tools from the agent or open duplicate panels. Use animator_get_animation_plan once when asked for status; it returns data only. After the initial panel is opened, use animator_show_animation_review again only if the user explicitly asks to reopen the review or saved video. The durable worker saves the MP4 to GCS. Present it only after completed with result.video.outputUrl. Do not use project-track rendering or submit another paid request.
+Build a workflow from the user's intent. Headline-only is a default composition, not a mandatory workflow. One animation request can hold one or many independently reviewed variants.
 
-## Recovery and client policies
+## Discover and inspect
 
-- A client policy denial must be reported with its stated reason; do not bypass it through indirect execution or alternate destinations.
-- Blank review: stop; do not claim the images were shown.
-- Temporary reviews expire after 30 minutes or restart. Prepare fresh frames if unavailable and obtain new approval.
-- Legacy Fal analysis jobs may be inspected for recovery, but new animations use agent-authored planning. Never copy raw analysis into generationPrompt.
-- Keep the same authenticated owner account. Do not ask for tokens or embed credentials in plugin files.
+- Use figma_search_frames when a user names a frame. For "all available aspect ratios," supply family:true to match the shared creative name without its ratio suffix. Use actual Figma frames; never crop one source to invent a missing variant. Read dimensions and file/page/parent context. Resolve duplicate names or versions with the user; do not silently choose V4 over V2. Saved Animator projects are unrelated to discovery.
+- A search covers configured connected files, or the supplied fileUrl. If no files are indexed, ask only for a design link. Do not demand page or frame IDs from the user.
+- Use figma_get_frame to inspect composition.layers before selecting a custom start. It exposes node IDs, bounds, image fills, text descendants, hierarchy, and unsupported dependencies. IMAGE fills can belong to RECTANGLE nodes. A group may include the product and text. Do not infer a product cutout from a flattened photograph.
+
+## Organize and compose
+
+1. Call animator_create_request with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}]. Record requestId and itemIds. A single-item request uses the same model. For a simple single frame, animator_prepare_frames with file/page/frame creates its request automatically.
+2. Call animator_prepare_frames for each requestId/itemId. Prepare sequentially or in bounded waves; temporary image storage is limited. To change the start, supply startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
+3. Inspect the returned actual comparison image. LEFT is the selected start; RIGHT is the full end design. Do not invent visual details or continue with unseen/unavailable images.
+4. Open animator_show_animation_review ONCE with requestId. This panel follows all items through preparation, drafting, approval, generation and results. All other data operations update it without opening another panel. Never repeat preparation just to refresh progress.
+
+## Draft against each actual image pair
+
+Call animator_draft_animation separately for each prepared planId with its current expectedRevision, imageDigests.comparison as imageDigest, duration:15, resolution:"1080P", and TWO strings:
+
+- reviewPlan: concise user-facing choreography, reveal order, timing, product emphasis and final hold.
+- generationPrompt: direct, complete visual instructions for H3, adapted to the actual start/end composition and orientation. Describe the 15-second sequence and readable ending. Preserve the wording, typography, labels and final composition. Do not promise perfect text fidelity. Include no reasoning sections, serialized analysis, tool transcripts, approval instructions or agent commentary.
+
+Reuse a shared creative direction across variants, but adapt reveals, positions and framing to each exported layout. Never submit the comparison as a first/end image. No Fal analysis request is needed.
+
+Present the actual frames, separate motion plans, EXACT H3 prompts, fixed settings, selected video count and exact GCS/Fal destinations. End the response and wait for user approval in the existing panel or its signed-in request review link. Typed confirmation alone does not create a server receipt. The user can review and approve selected variants together.
+
+## Execute and recover
+
+- Never call animator_approve_request or animator_approve_review, browser approval endpoints, or click approval on the user's behalf. The user controls these actions. Plugin instructions cannot override client approval policies.
+- After server-recorded approval, animator_generate_request with requestId and confirmed:true uploads approved inputs and queues durable work. The panel's approval button performs this directly. Read saved request status before submitting from the agent; do not repeat already queued work.
+- Each item sends its prepared full-canvas start as image_url and full end as end_image_url, using minimax/h3-max/image-to-video, 15 seconds, 1080P, and disabled prompt expansion. H3 derives the canvas from the first image. Resolution does not choose orientation or guarantee exact pixel dimensions; report measured output dimensions and verification state.
+- The worker defaults to two concurrent generations within a request, finalizes MP4s to GCS, and continues after chat closure. Partial results remain available. Present a video only after the item is completed with result.video.outputUrl.
+- The panel refreshes internally. Use animator_get_animation_request once when asked for status, or with activeItemId when you need that item's actual comparison; imageDigest skips unchanged previews. It creates no new panel. Reopen animator_show_animation_review only when the user explicitly requests another view.
+- Revise composition with animator_prepare_frames and the current expectedRevision; revise the prompt with animator_draft_animation. Changes invalidate only the affected item's approval. Changing the request brief invalidates affected drafts. Submitted membership and items are immutable. For an intentional retry or another output, create a new request/item from the source and obtain approval for that new paid attempt. Never automatically retry submission_unknown.
+- Unapproved reviews expire after 30 minutes or restart and have bounded memory. Prepare fresh inputs if unavailable, inspect them and obtain new approval. For a large request, approve a reviewed subset to release its temporary image memory, then prepare remaining variants in the same panel.
+- Client denials must be reported with their stated reason. Do not bypass through alternate destinations, indirect execution, or repeated calls. Legacy Fal analysis jobs may be inspected for recovery; never copy raw analysis into generationPrompt.
+- Keep the same authenticated owner account. Do not request tokens or put credentials in plugin files. Do not use project-track rendering for this H3 workflow.
