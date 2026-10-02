@@ -26,7 +26,7 @@ Build a workflow from the user's intent. Headline-only is a default composition,
 ## Organize and compose
 
 1. Call animator_create_request ONCE with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}], for a single frame or a whole batch. Record requestId and itemIds. In ChatGPT and other MCP Apps hosts, this call opens the single live inline workspace automatically. Never split a multi-ratio batch into separate requests or panels. To edit membership or brief, use animator_update_request with the current expectedRevision; it updates the existing workspace without opening another.
-2. Call animator_prepare_request ONCE with requestId and the current request expectedRevision. It prepares ALL pending frames with server concurrency two and reuses already prepared pairs. Do not require the user to prepare each frame or create a separate request for each ratio. Keep preparationFailures visible and resolve them before calling the entire batch ready; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. Preparation returns expiring read links to private media, never public bucket access or a Fal request. For an intentional individual composition edit, use animator_prepare_frames with requestId/itemId, the current item expectedRevision, and startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
+2. Read animator_get_animation_request once before preparation. The inline panel automatically prepares headline-only first frames and full-design last frames for a new request. Reuse those prepared pairs; if preparation is running, let it finish. If the request still has unprepared items and no preparation is running, call animator_prepare_request ONCE with requestId, the current request expectedRevision, and startPreset: headline_only unless the user explicitly requested a custom composition. It prepares ALL pending frames with server concurrency two and reuses already prepared pairs. Do not require the user to prepare each frame or create a separate request for each ratio. Keep preparationFailures visible and resolve them before calling the entire batch ready; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. Preparation returns expiring read links to private media, never public bucket access or a Fal request. For an intentional individual composition edit, use animator_prepare_frames with requestId/itemId, the current item expectedRevision, and startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
 3. Inspect EVERY actual comparison image returned together by animator_prepare_request. Each image is labeled with its itemId and digest; preserve that association. LEFT is the selected start; RIGHT is the full end design. Do not invent visual details or continue with unseen/unavailable images.
 4. In ChatGPT and other MCP Apps hosts, use the panel opened by animator_create_request for previews, selection, composition edits and approval. Preparation, drafting, generation and status return data and update that panel. DO NOT also call animator_show_animation_review after creation, preparation or drafting. Reopen it only if the user explicitly asks, or for a legacy standalone plan with no panel. Never repeat preparation just to refresh progress. Without panel support, use the media delivery rules below.
 
@@ -71,3 +71,29 @@ Do not invent confirmation text, refresh stale digests silently, add unapproved 
 ## External batch views
 
 Existing /mcp/review/ URLs are read-only views for a viewing or sharing link when the user requests one. They never accept selection, edits or approval. Do not send these links as part of the animation input or approval workflow. Current views require the same signed-in owner account; a link does not grant another account access.
+
+## Semantic start-frame selection
+
+For requests such as “only keep the secondary text,” “hide the bottle,” or
+“only Modafinil on screen,” inspect real nodes with `figma_query_layers`.
+Combine own text (`textMatch: exact` preferred), type, name, image fills,
+font-size ranges and relative region. `textRole: secondary` uses relative font
+size to find candidates, not a reliable semantic label. Inspect full text,
+bounds, ancestors and constraints before selecting. Never invent IDs.
+
+Pass `startFrame.includeNodeIds` to keep specific objects, or
+`startFrame.excludeNodeIds` to hide objects (exclusion alone keeps the remaining
+top-level content). Both can combine. Pass the query’s sourceDigest as expectedSourceDigest to reject a changed source. Excluding a child splits the selected
+group; masks, clipping or blending may prevent safe isolated exports and must
+be reported, never silently replaced with another composition. Keep a deliberate
+background. Selecting a containing group includes its other descendants.
+
+A text substring match keeps the entire atomic text node. If “Modafinil” shares
+a node with other words, do not claim the resulting frame contains only that
+word: explain the node boundary and ask for a separate source text layer when
+necessary. After every composition change inspect the actual comparison,
+redraft the motion prompt and obtain fresh generation confirmation.
+
+## Library and panel behavior
+
+Library shows actual document pages, top-level artboard sets, and their available aspect ratios. Use `figma_list_animation_frames` with `topLevelOnly: true` for Library discovery; use bounded `frameIds` with `figma_list_ad_sets` for preview reads. Never invent missing variants. The panel keeps a bounded inline height and scrolls internally. Reuse its existing request and do not open another panel for routine status updates. Custom first-frame requests require actual per-ratio layer inspection, revised comparisons and prompts, and fresh approval.
