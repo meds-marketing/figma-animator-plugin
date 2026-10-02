@@ -101,7 +101,7 @@ For Claude Code, use `claude plugin marketplace update figma-animator` followed 
 
 Release maintainers synchronize portable and compatibility manifests, validate and rebuild the ZIP, verify the matching hosted MCP deployment, commit the allowlisted distribution files, and publish a matching version tag and ZIP release asset. Do not include backend source, credentials, app IDs from another account, or private design media.
 
-## Organization authorization (0.3.3)
+## Organization authorization (0.3.4)
 
 An administrator can provision a dedicated API key per client. Use `/mcp/shared` for the interactive workspace and `/mcp/tools` for standard tools and media without extensions. Read [organization setup, identity and client limits](plugins/figma-animator/ORG-AUTH.md). Claude header authentication depends on its beta availability; ChatGPT shared connections depend on the target surface and workspace controls.
 

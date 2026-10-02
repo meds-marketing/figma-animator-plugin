@@ -5,11 +5,12 @@ const readline = require('node:readline');
 const ENDPOINT = 'https://figma.meds-marketing.dev/mcp/tools';
 const MAX_RESPONSE_BYTES = 64 * 1024 * 1024;
 
-async function forward(message, { apiKey, endpoint = ENDPOINT, request = fetch, emit }) {
+async function forward(message, { apiKey, protocolVersion, endpoint = ENDPOINT, request = fetch, emit }) {
   const response = await request(endpoint, {
     method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30 * 60 * 1000),
     headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json',
-      accept: 'application/json, text/event-stream' }, body: JSON.stringify(message),
+      accept: 'application/json, text/event-stream',
+      ...(protocolVersion ? { 'MCP-Protocol-Version': protocolVersion } : {}) }, body: JSON.stringify(message),
   });
   if (!response.ok) {
     await response.body?.cancel();
@@ -46,6 +47,7 @@ function main() {
     (process.env.FIGMA_ANIMATOR_API_KEY_FILE ? fs.readFileSync(process.env.FIGMA_ANIMATOR_API_KEY_FILE, 'utf8') : '')).trim();
   if (!/^fga_org_[A-Za-z0-9_-]{43}$/.test(apiKey)) throw new Error('Configure FIGMA_ANIMATOR_API_KEY or FIGMA_ANIMATOR_API_KEY_FILE with an organization key');
   const emit = message => process.stdout.write(JSON.stringify(message) + '\n');
+  let protocolVersion;
   const input = readline.createInterface({ input: process.stdin, crlfDelay: Infinity });
   input.on('line', async line => {
     if (!line.trim()) return;
@@ -58,7 +60,13 @@ function main() {
       emit({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Invalid MCP request' } });
       return;
     }
-    try { await forward(message, { apiKey, emit }); }
+    try { await forward(message, { apiKey, protocolVersion, emit: response => {
+      if (message.method === 'initialize' && response.id === message.id &&
+          /^\d{4}-\d{2}-\d{2}$/.test(response.result?.protocolVersion || '')) {
+        protocolVersion = response.result.protocolVersion;
+      }
+      emit(response);
+    } }); }
     catch {
       // No retries: an interrupted paid submission may already have succeeded.
       if (Object.hasOwn(message, 'id')) emit({ jsonrpc: '2.0', id: message.id,
