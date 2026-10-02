@@ -17,7 +17,7 @@ For ChatGPT web, first verify the registered Figma Animator app's technical ID a
 
 ## Approval contract
 
-Preparation returns actual review images. The agent drafts separate `reviewPlan` and `generationPrompt` fields. Review the images, exact H3 prompt, settings and GCS/Fal destinations in the single inline workspace in ChatGPT and other MCP Apps clients. Creating the batch opens this panel automatically. Tools-only clients receive images and prompts in ordinary chat. In tools-only clients such as Runneth, explicitly approve in chat; the agent calls `animator_confirm_generation` with your actual reply and the displayed selection/prompt digests. That records a `chat-confirmation` receipt without a Fal request. The next generation call uses that receipt. Each edit requires renewed approval. App-only approval tools remain reserved for human UI clicks. Client approval policies still apply.
+Preparation returns actual review images. The agent drafts separate `reviewPlan` and `generationPrompt` fields. Review the images, exact H3 prompt, settings and GCS/Fal destinations in the single inline workspace in ChatGPT and other MCP Apps clients. Creating the batch opens this panel automatically. Tools-only clients receive images and prompts in ordinary chat. In every client including ChatGPT, Codex, Claude and Runneth, approve the entire displayed batch once in chat; the agent calls `animator_confirm_generation` with your actual reply and the displayed selection/prompt digests. That records a `chat-confirmation` receipt without a Fal request. The next generation call uses that receipt. Each edit requires renewed approval. App-only approval tools remain reserved for human UI clicks. Client approval policies still apply.
 
 ## Animation capabilities
 
@@ -28,3 +28,5 @@ Version 0.2.1 fixes signed-in browser form approval, saves hosted reviews privat
 Version 0.2.2 adds ordinary MCP chat confirmation for clients without MCP Apps. No custom UI or browser review page is required.
 
 Version 0.2.3 opens one live inline workspace when a batch is created. Preparation, drafting, edits and generation update it without new panels. External batch pages are read-only views, never input or approval screens. Existing view links remain restricted to the signed-in owner; they do not grant cross-account access.
+
+Version 0.2.4 prepares all requested frames with `animator_prepare_request`, saves all image-specific plans and prompts with `animator_draft_request`, and displays every variant together. Approve the whole batch with one inline button or one explicit chat reply. The agent records the exact displayed batch snapshot in one confirmation call; no per-frame approval is required.
