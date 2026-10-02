@@ -17,10 +17,12 @@ For ChatGPT web, first verify the registered Figma Animator app's technical ID a
 
 ## Approval contract
 
-Preparation returns actual review images. The agent inspects them and calls `animator_draft_animation` with separate `reviewPlan` and `generationPrompt` fields. Review the frames and exact prompt, then approve sending the reviewed start/end images and exact prompt to Fal for paid video generation through the inline review or authenticated review link. No Fal analysis is required. Every edit clears approval. Generation always uses 15 seconds, 1080P, and disabled prompt expansion. Client approval policies still apply.
+Preparation returns actual review images. The agent drafts separate `reviewPlan` and `generationPrompt` fields. Review the images, exact H3 prompt, settings and GCS/Fal destinations in chat or an optional inline panel. In tools-only clients such as Runneth, explicitly approve in chat; the agent calls `animator_confirm_generation` with your actual reply and the displayed selection/prompt digests. That records a `chat-confirmation` receipt without a Fal request. The next generation call uses that receipt. Each edit requires renewed approval. App-only approval tools remain reserved for human UI clicks. Client approval policies still apply.
 
 ## Animation capabilities
 
 Version 0.2.0 adds explicit layer/background composition, family discovery across actual ratios, one-or-many-item requests, selected-item approval, and one live request panel. The MCP enforces image/prompt revisions and durable execution. See the animate-frame skill for the tool contracts. Client approval policies still apply.
 
 Version 0.2.1 fixes signed-in browser form approval, saves hosted reviews privately across server instances with a 24-hour approval window, and accepts revision 1 for initial batch preparation. Generation approval remains bound to the exact exported images and prompt.
+
+Version 0.2.2 adds ordinary MCP chat confirmation for clients without MCP Apps. No custom UI or browser review page is required.

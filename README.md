@@ -71,3 +71,7 @@ Produces `dist/figma-animator-desktop.zip`. Packaging uses an explicit file allo
 Client installation and authenticated end-to-end generation must be checked in the target client. Publishing this repository does not install or register the plugin anywhere.
 
 Hosted reviews and drafts survive service restarts and instance changes. They have a 24-hour approval window; assets remain private and no Fal request occurs before exact-prompt approval. Approval expiry is separate from storage retention. Open review links with the same Google account as the MCP connection. Older temporary reviews that are missing require fresh preparation and approval. Local development without durable review storage retains a bounded 30-minute in-memory fallback.
+
+## Approval in tools-only clients
+
+Runneth and other clients without MCP Apps can review the actual images and exact prompts in chat. After your explicit approval, the agent records it through `animator_confirm_generation`, then submits the approved generation. The confirmation receipt binds the selected versions, images and exact prompts; edits require fresh approval. This uses ordinary MCP tools and requires no custom UI or review-page visit. The server records the agent reporting your confirmation, while the client retains its own approval policy.

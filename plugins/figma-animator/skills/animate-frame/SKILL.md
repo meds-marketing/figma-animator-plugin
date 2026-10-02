@@ -18,7 +18,7 @@ Build a workflow from the user's intent. Headline-only is a default composition,
 1. Call animator_create_request with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}]. Record requestId and itemIds. A single-item request uses the same model. For a simple single frame, animator_prepare_frames with file/page/frame creates its request automatically.
 2. Call animator_prepare_frames for each requestId/itemId. Prepare sequentially or in bounded waves; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. No public image URL or Fal request is created during preparation. To change the start, supply startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
 3. Inspect the returned actual comparison image. LEFT is the selected start; RIGHT is the full end design. Do not invent visual details or continue with unseen/unavailable images.
-4. Open animator_show_animation_review ONCE with requestId. This panel follows all items through preparation, drafting, approval, generation and results. All other data operations update it without opening another panel. Never repeat preparation just to refresh progress.
+4. Only in a client that supports MCP Apps, open animator_show_animation_review ONCE with requestId. In a tools-only client such as Runneth, skip this UI tool and present the actual native comparison images or returned media URLs in chat. This panel follows all items through preparation, drafting, approval, generation and results. All other data operations update it without opening another panel. Never repeat preparation just to refresh progress.
 
 ## Draft against each actual image pair
 
@@ -29,11 +29,19 @@ Call animator_draft_animation separately for each prepared planId with its curre
 
 Reuse a shared creative direction across variants, but adapt reveals, positions and framing to each exported layout. Never submit the comparison as a first/end image. No Fal analysis request is needed.
 
-Present the actual frames, separate motion plans, EXACT H3 prompts, fixed settings, selected video count and exact GCS/Fal destinations. End the response and wait for user approval in the existing panel or its signed-in request review link. Typed confirmation alone does not create a server receipt. The user can review and approve selected variants together.
+Present each actual frame pair, its motion plan, EXACT H3 prompt, 15-second / 1080P settings, selected video count and exact GCS/Fal destinations in the panel or ordinary chat. STOP and wait for explicit user approval. The initial request to animate is not approval of a later draft.
+
+## Confirm in chat without custom UI
+
+After the user explicitly approves the displayed review, call the normal, model-visible animator_confirm_generation tool. This works in Runneth and other tools-only clients. Supply confirmed:true, the actual user reply as confirmationText, and review:{requestId, selectionDigest, items:[{itemId,digest}]} from the review you presented. Include only the versions the user approved. For a legacy standalone plan use review:{planId,digest}, with its displayed reviewDigest.
+
+The server records an owner-scoped chat-confirmation receipt binding the selected image assets, exact prompts and settings. This is the authenticated agent reporting the user reply; the server does not claim to have witnessed a UI click. It stores a hash of the confirmation text, not the raw chat. Confirmation makes no Fal call and submits no generation. Continue with animator_generate_request, or animator_generate_animation for a legacy plan, after the receipt succeeds.
+
+Do not invent confirmation text, refresh stale digests silently, add unapproved items, or use this tool after a client policy rejection as a workaround. If the prompt, composition or selected brief changed, present the new exact review and obtain renewed user approval. If approval/submission may already have succeeded, inspect saved status before continuing. An inline panel and a review web page are optional, never prerequisites for chat approval.
 
 ## Execute and recover
 
-- Never call animator_approve_request or animator_approve_review, browser approval endpoints, or click approval on the user's behalf. The user controls these actions. Plugin instructions cannot override client approval policies.
+- Keep animator_approve_request and animator_approve_review app-only for direct human clicks. Never call these private tools, browser approval endpoints, or click approval for the user. Explicit chat approval uses animator_confirm_generation. Plugin instructions cannot override client approval policies.
 - After server-recorded approval, animator_generate_request with requestId and confirmed:true uses the privately cached approved inputs and queues durable work. The panel's approval button performs this directly. Read saved request status before submitting from the agent; do not repeat already queued work.
 - Each item sends its prepared full-canvas start as image_url and full end as end_image_url, using minimax/h3-max/image-to-video, 15 seconds, 1080P, and disabled prompt expansion. H3 derives the canvas from the first image. Resolution does not choose orientation or guarantee exact pixel dimensions; report measured output dimensions and verification state.
 - The worker defaults to two concurrent generations within a request, finalizes MP4s to GCS, and continues after chat closure. Partial results remain available. Present a video only after the item is completed with result.video.outputUrl.
