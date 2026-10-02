@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "figma-animator",
-  "version": "0.2.4",
-  "description": "Compose and review Figma animations across variants with exact-prompt approval.",
+  "version": "0.3.0",
+  "description": "Browse Figma variants and resume exact-prompt animation reviews in a native workspace.",
   "author": {
     "name": "Meds Marketing"
   },
@@ -13,7 +13,7 @@
       "interface": {
         "displayName": "Figma Animator",
         "shortDescription": "Review and animate frames",
-        "longDescription": "Discover related Figma frames, compose start images, draft exact H3 prompts and approve selected 15-second 1080P animations in one live inline workspace, with ordinary chat confirmation in tools-only clients.",
+        "longDescription": "Open the Figma library, select real variants, compose start frames and review exact H3 prompts in one saved animation workspace. Follow batch progress, reopen results and use explicit chat confirmation in clients without custom UI.",
         "developerName": "Meds Marketing",
         "category": "Creativity",
         "capabilities": [

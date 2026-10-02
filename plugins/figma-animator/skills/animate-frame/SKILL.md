@@ -7,6 +7,16 @@ description: Discover Figma variants, compose start frames, draft motion plans, 
 
 Build a workflow from the user's intent. Headline-only is a default composition, not a mandatory workflow. One animation request can hold one or many independently reviewed variants.
 
+## Open, resume, and configure the workspace
+
+- Open the library with figma_media_browser. Use animator_open_workspace with empty arguments to open Animations and history without creating a request. Both tools have native entrypoints in supporting hosts; ordinary MCP clients can call them directly.
+- To resume earlier work, use animator_list_requests with its filter and bounded limit, and follow nextCursor even when a filtered page contains no rows. Open the exact discovered requestId through animator_get_animation_request. Never invent identifiers or create a duplicate request to inspect history.
+- Frame resource links are stable figma-frame references to actual file/page/frame identities. Treat them as design references, not image exports or authorization to submit a render. Resolve the referenced identity through the ordinary frame tools before preparing media.
+- Use the workspace Preferences view or native settings UI for defaultFileUrl, previewDensity and startPreset. The app uses animator_read_preferences and generation-fenced animator_update_preferences; these are app-only tools, not agent commands. The workspace-open result supplies current preferences for context. Use explicit request inputs over saved defaults; preferences do not constitute paid-generation approval.
+- Native mention search and settings tools may be app-only and unavailable to the agent. Use model-visible frame search and explicit user choices when the host does not expose those tools. Do not call private tools through an alternate path.
+- For animator_create_request, generate one UUID idempotencyKey for that logical request and retain it with the exact frames and brief. After an uncertain response, retry the same key and unchanged payload. A changed payload needs a new logical request; never replace the key merely because a response timed out.
+- For batch preparation, startPreset can choose headline_only or image_only for pending frames. selected_layers requires actual per-item layer choices through animator_prepare_frames; do not reuse a node ID across different frames.
+
 ## Discover and inspect
 
 - Use figma_search_frames when a user names a frame. For "all available aspect ratios," supply family:true to match the shared creative name without its ratio suffix. Use actual Figma frames; never crop one source to invent a missing variant. Read dimensions and file/page/parent context. Resolve duplicate names or versions with the user; do not silently choose V4 over V2. Saved Animator projects are unrelated to discovery.

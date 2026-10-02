@@ -81,3 +81,22 @@ Version 0.2.4 opens the inline workspace from batch creation. Normal workflow re
 ### One batch, one approval
 
 Create one request containing all discovered frame identities. `animator_prepare_request` exports all pending frame pairs together, and `animator_draft_request` saves a separate motion plan and exact H3 prompt for every actual layout in one call. All variants appear in the same panel. One explicit chat reply approves the complete displayed batch in ChatGPT, Codex, Claude and tools-only clients; the single inline approval button works too. Any changed image or prompt requires renewed approval.
+
+## Version 0.3.0
+
+Library, Animations history and Preferences now share one responsive workspace. Native MCP extensions advertise global and thread entrypoints, stable frame mentions and settings where the host supports them. The skill explains exact request reopening, actual source identities, request idempotency and composition defaults; ordinary tools and explicit chat approval remain supported. The package includes the supplied animation icon in SVG and PNG.
+
+## Updating an installed plugin
+
+For Codex, refresh this marketplace and reinstall the plugin through its supported commands:
+
+```sh
+codex plugin marketplace upgrade figma-animator
+codex plugin add figma-animator@figma-animator
+```
+
+Start a new chat or reconnect the MCP if the current chat still has the old tool catalog. Keep the same authenticated owner account. A marketplace refresh updates package instructions and icons; the hosted server deploy updates tools and UI independently.
+
+For Claude Code, use `claude plugin marketplace update figma-animator` followed by `claude plugin update figma-animator@figma-animator`, then restart the session if its tool catalog remains stale.
+
+Release maintainers synchronize portable and compatibility manifests, validate and rebuild the ZIP, verify the matching hosted MCP deployment, commit the allowlisted distribution files, and publish a matching version tag and ZIP release asset. Do not include backend source, credentials, app IDs from another account, or private design media.

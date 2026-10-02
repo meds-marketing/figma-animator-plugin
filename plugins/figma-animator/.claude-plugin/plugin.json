@@ -1,7 +1,7 @@
 {
   "name": "figma-animator",
-  "version": "0.2.4",
-  "description": "Compose and review Figma animations across variants with exact-prompt approval.",
+  "version": "0.3.0",
+  "description": "Browse Figma variants and resume exact-prompt animation reviews in a native workspace.",
   "author": {
     "name": "Meds Marketing"
   },

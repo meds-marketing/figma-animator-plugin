@@ -22,10 +22,25 @@ def main():
 
     # Only package declared source files; never include hidden OS metadata or credentials.
     paths = ["plugin.json", ".codex-plugin/plugin.json", "README.md",
-             "assets/icon.svg", "skills/animate-frame/SKILL.md"]
+             "assets/icon.svg", "assets/icon.png", "skills/animate-frame/SKILL.md"]
     if not args.app_id:
         paths += ["mcp.json", ".mcp.json", ".claude-plugin/plugin.json"]
     contents = {path: (SOURCE / path).read_bytes() for path in paths}
+    manifest = json.loads(contents["plugin.json"])
+    interface = manifest["extensions"]["com.openai"]["interface"]
+    for name in (".codex-plugin/plugin.json", ".claude-plugin/plugin.json"):
+        overlay = json.loads((SOURCE / name).read_text())
+        for field in ("name", "version", "description", "repository"):
+            if overlay.get(field) != manifest.get(field):
+                parser.error(f"{name}: {field} must match plugin.json")
+        if "interface" in overlay and overlay["interface"] != interface:
+            parser.error(f"{name}: interface must match plugin.json")
+    for field in ("logo", "composerIcon"):
+        asset = interface[field].removeprefix("./")
+        if asset not in contents:
+            parser.error(f"{field}: asset must be in the package allowlist")
+    if len(interface["shortDescription"]) > 30:
+        parser.error("shortDescription must be at most 30 characters")
     if args.app_id:
         manifest = json.loads(contents["plugin.json"])
         manifest["extensions"]["com.openai"]["apps"] = "./.app.json"

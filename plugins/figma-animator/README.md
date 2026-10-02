@@ -1,5 +1,6 @@
 # Figma Animator plugin
 
+Version 0.3.0 adds a Figma library, a saved animation workspace, frame references, preferences and responsive host styling. Sidebar/thread entrypoints and composer mentions depend on the connected host. Local manifest changes do not publish or update the hosted plugin binding. See [workspace contracts](../../docs/mcp-workspace.md).
 This desktop package connects to the existing `.dev` MCP and includes the `animate-frame` skill. Sign in with the MCP's Google OAuth flow using an allowed meds.com or bluechew.com account. Previews and approval stay in the inline workspace in ChatGPT, or ordinary chat in tools-only clients.
 
 ## Package formats
@@ -11,9 +12,9 @@ This desktop package connects to the existing `.dev` MCP and includes the `anima
 
 ## Build archives
 
-Run `python3 scripts/package-plugin.py` from the repository to create `dist/figma-animator-desktop.zip`.
+Run `python3 scripts/package-plugin.py` from the repository to create `public/plugins/figma-animator-desktop.zip`.
 
-For ChatGPT web, first verify the registered Figma Animator app's technical ID and its MCP endpoint. Run `python3 scripts/package-plugin.py --app-id <current-asdk_app-ID>` to create `dist/figma-animator.zip`. This web archive includes `.app.json` and the skill, excludes both MCP configuration files and Claude compatibility metadata, and points the OpenAI manifest at the registered app. A mapping does not create that app or grant permissions. Do not use an app ID whose detail page returns Plugin not found.
+For ChatGPT web, first verify the registered Figma Animator app's technical ID and its MCP endpoint. Run `python3 scripts/package-plugin.py --app-id <current-asdk_app-ID>` to create `public/plugins/figma-animator.zip`. This web archive includes `.app.json` and the skill, excludes both MCP configuration files and Claude compatibility metadata, and points the OpenAI manifest at the registered app. A mapping does not create that app or grant permissions. Do not use an app ID whose detail page returns Plugin not found.
 
 ## Approval contract
 
@@ -30,3 +31,5 @@ Version 0.2.2 adds ordinary MCP chat confirmation for clients without MCP Apps. 
 Version 0.2.3 opens one live inline workspace when a batch is created. Preparation, drafting, edits and generation update it without new panels. External batch pages are read-only views, never input or approval screens. Existing view links remain restricted to the signed-in owner; they do not grant cross-account access.
 
 Version 0.2.4 prepares all requested frames with `animator_prepare_request`, saves all image-specific plans and prompts with `animator_draft_request`, and displays every variant together. Approve the whole batch with one inline button or one explicit chat reply. The agent records the exact displayed batch snapshot in one confirmation call; no per-frame approval is required.
+
+Version 0.3.0 adds Library, Animations history, owner-scoped preferences, stable frame references, native extension entrypoints, request idempotency, responsive batch review and the supplied animation icon. Ordinary MCP tools and explicit chat approval remain available in clients without the native UI.
