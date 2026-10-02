@@ -1,12 +1,12 @@
 {
   "name": "figma-animator",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Compose and review Figma animations across variants with exact-prompt approval.",
   "author": {
     "name": "Meds Marketing"
   },
   "homepage": "https://figma.meds-marketing.dev/mcp",
-  "repository": "https://github.com/meds-marketing/figma-animator-plugin",
+  "repository": "https://github.com/meds-marketing/figma-animator",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {

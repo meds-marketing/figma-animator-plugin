@@ -42,7 +42,7 @@ def main():
             f"binding to `{args.app_id}`. It contains no bundled MCP server declarations.\n\n"
             "Import into the account/workspace that can access that registered Figma Animator app. "
             "The mapping does not create an app or grant access. Sign in through its Google OAuth "
-            "flow. Use the same account for the signed-in frame and prompt review pages.\n\n"
+            "flow. Previews and approval stay in the single inline animation workspace.\n\n"
             "For Codex or Claude Code direct MCP wiring, use figma-animator-desktop.zip. "
             "Client approval policies still apply; the skill cannot bypass them.\n"
         ).encode()

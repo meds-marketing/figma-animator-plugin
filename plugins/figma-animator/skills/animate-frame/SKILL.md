@@ -1,6 +1,6 @@
 ---
 name: animate-frame
-description: Discover Figma variants, compose start frames, draft motion plans, and execute approved H3 animations in one live request panel.
+description: Discover Figma variants, compose start frames, draft motion plans, and execute approved H3 animations with one live inline workspace in UI hosts and chat confirmation in tools-only hosts.
 ---
 
 # Figma animation capabilities
@@ -15,10 +15,17 @@ Build a workflow from the user's intent. Headline-only is a default composition,
 
 ## Organize and compose
 
-1. Call animator_create_request with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}]. Record requestId and itemIds. A single-item request uses the same model. For a simple single frame, animator_prepare_frames with file/page/frame creates its request automatically.
-2. Call animator_prepare_frames for each requestId/itemId. Prepare sequentially or in bounded waves; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. No public image URL or Fal request is created during preparation. To change the start, supply startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
+1. Call animator_create_request ONCE with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}], for a single frame or a whole batch. Record requestId and itemIds. In ChatGPT and other MCP Apps hosts, this call opens the single live inline workspace automatically. Never split a multi-ratio batch into separate requests or panels. To edit membership or brief, use animator_update_request with the current expectedRevision; it updates the existing workspace without opening another.
+2. Call animator_prepare_frames for each requestId/itemId. Prepare sequentially or in bounded waves; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. Preparation returns expiring read links to private media, never public bucket access or a Fal request. To change the start, supply startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
 3. Inspect the returned actual comparison image. LEFT is the selected start; RIGHT is the full end design. Do not invent visual details or continue with unseen/unavailable images.
-4. Only in a client that supports MCP Apps, open animator_show_animation_review ONCE with requestId. In a tools-only client such as Runneth, skip this UI tool and present the actual native comparison images or returned media URLs in chat. This panel follows all items through preparation, drafting, approval, generation and results. All other data operations update it without opening another panel. Never repeat preparation just to refresh progress.
+4. In ChatGPT and other MCP Apps hosts, use the panel opened by animator_create_request for previews, selection, composition edits and approval. Preparation, drafting, generation and status return data and update that panel. DO NOT also call animator_show_animation_review after creation, preparation or drafting. Reopen it only if the user explicitly asks, or for a legacy standalone plan with no panel. Never repeat preparation just to refresh progress. Without panel support, use the media delivery rules below.
+
+## Clients without inline panels
+
+- Share direct media URLs from media.comparison.url, media.startFrame.url, media.endFrame.url, and media.video.url when available. Each prepared request item has its own media links. Include the motion plan, exact H3 prompt and fixed settings as ordinary chat text.
+- Never send or construct an /mcp/review/ page link as a fallback, including /mcp/review/request/ links. Do not replace an unavailable media link with a review page.
+- These URLs are expiring read links to the existing private Animator media. Refresh them through the ordinary plan/request status tools when needed. Native image content can also show the comparison. Do not invent URLs or claim unavailable media was displayed.
+- Viewing or sharing media does not approve a paid render. After explicit user approval of the complete displayed review, use animator_confirm_generation to record a chat receipt. Do not call app-only approval tools or click approval for the user.
 
 ## Draft against each actual image pair
 
@@ -29,7 +36,7 @@ Call animator_draft_animation separately for each prepared planId with its curre
 
 Reuse a shared creative direction across variants, but adapt reveals, positions and framing to each exported layout. Never submit the comparison as a first/end image. No Fal analysis request is needed.
 
-Present each actual frame pair, its motion plan, EXACT H3 prompt, 15-second / 1080P settings, selected video count and exact GCS/Fal destinations in the panel or ordinary chat. STOP and wait for explicit user approval. The initial request to animate is not approval of a later draft.
+Present each actual frame pair, its motion plan, EXACT H3 prompt, 15-second / 1080P settings, selected video count and exact GCS/Fal destinations inside the existing inline panel for ChatGPT and other UI hosts, or ordinary chat for tools-only hosts. Never replace inline preview/approval buttons with review links. STOP and wait for explicit user approval. The initial request to animate is not approval of a later draft.
 
 ## Confirm in chat without custom UI
 
@@ -47,6 +54,10 @@ Do not invent confirmation text, refresh stale digests silently, add unapproved 
 - The worker defaults to two concurrent generations within a request, finalizes MP4s to GCS, and continues after chat closure. Partial results remain available. Present a video only after the item is completed with result.video.outputUrl.
 - The panel refreshes internally. Use animator_get_animation_request once when asked for status, or with activeItemId when you need that item's actual comparison; imageDigest skips unchanged previews. It creates no new panel. Reopen animator_show_animation_review only when the user explicitly requests another view.
 - Revise composition with animator_prepare_frames and the current expectedRevision; revise the prompt with animator_draft_animation. Changes invalidate only the affected item's approval. Changing the request brief invalidates affected drafts. Submitted membership and items are immutable. For an intentional retry or another output, create a new request/item from the source and obtain approval for that new paid attempt. Never automatically retry submission_unknown.
-- Hosted reviews and drafts are stored privately and survive server restarts or instance changes. Their approval window is 24 hours; this is an approval expiry, not a storage deletion promise. Open review links with the same Google account as the MCP connection. If an older temporary review is unavailable or a review has expired, prepare fresh inputs, inspect them and obtain new approval. Local development without durable review storage retains a bounded 30-minute in-memory fallback. A browser approval redirects to saved request progress; inspect that status before making another generation call.
+- Hosted reviews and drafts are stored privately and survive server restarts or instance changes. Their approval window is 24 hours; this is an approval expiry, not a storage deletion promise. If an older temporary review is unavailable or a review has expired, prepare fresh inputs, inspect them and obtain new approval. Local development without durable review storage retains a bounded 30-minute in-memory fallback.
 - Client denials must be reported with their stated reason. Do not bypass through alternate destinations, indirect execution, or repeated calls. Legacy Fal analysis jobs may be inspected for recovery; never copy raw analysis into generationPrompt.
 - Keep the same authenticated owner account. Do not request tokens or put credentials in plugin files. Do not use project-track rendering for this H3 workflow.
+
+## External batch views
+
+Existing /mcp/review/ URLs are read-only views for a viewing or sharing link when the user requests one. They never accept selection, edits or approval. Do not send these links as part of the animation input or approval workflow. Current views require the same signed-in owner account; a link does not grant another account access.
