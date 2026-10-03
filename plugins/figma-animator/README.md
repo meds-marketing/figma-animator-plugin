@@ -1,6 +1,6 @@
 # Figma Animator plugin
 
-Version 0.3.0 adds a Figma library, a saved animation workspace, frame references, preferences and responsive host styling. Sidebar/thread entrypoints and composer mentions depend on the connected host. Local manifest changes do not publish or update the hosted plugin binding. See [workspace contracts](../../docs/mcp-workspace.md).
+Version 0.3.0 adds a Figma library, a saved animation workspace, frame references, preferences and responsive host styling. Sidebar/thread entrypoints and composer mentions depend on the connected host. Local manifest changes do not publish or update the hosted plugin binding. See [workspace contracts](https://github.com/meds-marketing/figma-animator/blob/dev/docs/mcp-workspace.md).
 This desktop package connects to the existing `.dev` MCP and includes the `animate-frame` skill. The default package uses Google OAuth. Organization connections can use administrator-provisioned API keys with `/mcp/shared` or `/mcp/tools`, without individual Google authorization. See [organization setup and client limits](ORG-AUTH.md). Previews and approval stay in the inline workspace in ChatGPT, or ordinary chat in tools-only clients.
 
 Version 0.3.4 includes independently revocable organization credentials, a tools-only endpoint, client configuration examples and a dependency-free local bridge that forwards the negotiated MCP protocol version. Build `python3 scripts/package-plugin.py --org-auth` for the skill and bridge without a bundled OAuth dependency. Configure the administrator-managed connection separately before using that package. The ChatGPT web ZIP retains its existing registered app identity; its authentication must be configured in the workspace.
@@ -35,3 +35,11 @@ Version 0.2.3 opens one live inline workspace when a batch is created. Preparati
 Version 0.2.4 prepares all requested frames with `animator_prepare_request`, saves all image-specific plans and prompts with `animator_draft_request`, and displays every variant together. Approve the whole batch with one inline button or one explicit chat reply. The agent records the exact displayed batch snapshot in one confirmation call; no per-frame approval is required.
 
 Version 0.3.0 adds Library, Animations history, owner-scoped preferences, stable frame references, native extension entrypoints, request idempotency, responsive batch review and the supplied animation icon. Ordinary MCP tools and explicit chat approval remain available in clients without the native UI.
+
+## Current MCP documentation
+
+See the [documentation index](https://github.com/meds-marketing/figma-animator/blob/dev/docs/INDEX.md), [agent/media workflow](https://github.com/meds-marketing/figma-animator/blob/dev/docs/mcp-agent-workflow.md), [release runbook](https://github.com/meds-marketing/figma-animator/blob/dev/docs/mcp-release.md), and [organization authorization](https://github.com/meds-marketing/figma-animator/blob/dev/docs/mcp-org-auth.md). These distinguish source, package, hosted service and authenticated client verification.
+
+Version 0.3.5 refreshes maintenance documentation alongside the hosted UI recovery and compact history filter release. The server supplies these UI changes; refresh the client package for updated documentation.
+
+Distribution maintainers should also read [distribution maintenance](https://github.com/meds-marketing/figma-animator-plugin/blob/main/docs/maintenance.md).

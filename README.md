@@ -76,7 +76,7 @@ Hosted reviews and drafts survive service restarts and instance changes. They ha
 
 ChatGPT, Codex, Claude, Runneth and other clients can review the actual images and exact prompts in chat. After your explicit approval, the agent records it through `animator_confirm_generation`, then submits the approved generation. The confirmation receipt binds the selected versions, images and exact prompts; edits require fresh approval. This uses ordinary MCP tools and requires no custom UI or review-page visit. The server records the agent reporting your confirmation, while the client retains its own approval policy.
 
-Version 0.2.4 opens the inline workspace from batch creation. Normal workflow results return media links and exact prompts instead of external approval links. No local installation is performed by publishing this package.
+Batch creation opens the inline workspace; the current manifest supplies the package version. Normal workflow results return media links and exact prompts instead of external approval links. No local installation is performed by publishing this package.
 
 ### One batch, one approval
 
@@ -106,3 +106,7 @@ Release maintainers synchronize portable and compatibility manifests, validate a
 An administrator can provision a dedicated API key per client. Use `/mcp/shared` for the interactive workspace and `/mcp/tools` for standard tools and media without extensions. Read [organization setup, identity and client limits](plugins/figma-animator/ORG-AUTH.md). Claude header authentication depends on its beta availability; ChatGPT shared connections depend on the target surface and workspace controls.
 
 Build `python3 scripts/package-plugin.py --org-auth` or download `figma-animator-org.zip` for the workflow skill, client examples and local stdio bridge without a bundled OAuth dependency. Configure the managed connection separately. Provision credentials privately; no keys are included in the package or repository. The default desktop package continues to use OAuth.
+
+## Maintainer documentation
+
+See [distribution maintenance](docs/maintenance.md) for package variants, current first-frame/prompt behavior, backend ownership and release/client verification. Organization setup remains in [ORG-AUTH.md](plugins/figma-animator/ORG-AUTH.md).
