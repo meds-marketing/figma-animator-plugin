@@ -109,4 +109,6 @@ Build `python3 scripts/package-plugin.py --org-auth` or download `figma-animator
 
 ## Maintainer documentation
 
+Read the [MCP agent and media workflow](docs/mcp-agent-workflow.md) for source selection, frame editing, prompt drafting, batch approval and recovery.
+
 See [distribution maintenance](docs/maintenance.md) for package variants, current first-frame/prompt behavior, backend ownership and release/client verification. Organization setup remains in [ORG-AUTH.md](plugins/figma-animator/ORG-AUTH.md).
