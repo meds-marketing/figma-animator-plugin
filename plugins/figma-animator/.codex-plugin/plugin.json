@@ -1,7 +1,7 @@
 {
   "name": "figma-animator",
-  "version": "0.3.5",
-  "description": "Browse Figma variants and resume exact-prompt animation reviews in a native workspace.",
+  "version": "0.3.6",
+  "description": "Review KISS frame pairs, edit image layers and generate approved H3 animations.",
   "author": {
     "name": "Meds Marketing"
   },

@@ -7,6 +7,8 @@ description: Discover Figma variants, compose start frames, draft motion plans, 
 
 Build a workflow from the user's intent. Headline-only is a default composition, not a mandatory workflow. One animation request can hold one or many independently reviewed variants.
 
+The MCP surface is KISS-only: Library source browsing, animation requests, motion drafts, exact-input approval, generation history and preferences. Manual layer-animation projects, project edit operations and compositor export belong to the authenticated web application and are unavailable through MCP discovery or invocation. Compatibility tools such as animator_animate_frame operate only on KISS plans.
+
 The client can authenticate with personal OAuth or an administrator-provisioned organization key. Organization keys bind all users to the configured shared owner and quota. Use the client's existing connection; do not ask users for Google authorization when a shared key is configured, and never ask them to paste keys into chat. The `/mcp/tools` endpoint and local stdio bridge have no UI dependency: present images and exact prompts in ordinary chat. Credential setup is documented in `../../ORG-AUTH.md`; authentication does not approve exports or paid generation.
 
 ## Open, resume, and configure the workspace
@@ -123,3 +125,15 @@ Use layer composition when the request only keeps or hides existing objects. If 
 Pass the item's `planId`, current plan `expectedRevision`, and approved `prompt`. The tool exports the full original frame and uses high precision, medium quality, one image and `image_size:auto`. Exact pixel dimensions are checked; same-proportion provider downscales are restored to the input size and marked as normalized. A changed aspect ratio is rejected. While pending, repeat the exact same plan, revision and prompt to inspect the existing job. A submitting/unknown result must not be retried with a fresh operation.
 
 After completion, read the existing request and inspect the actual edited first/full last comparison. Draft fresh motion plans and exact H3 prompts, then obtain fresh video-generation approval. The Figma source document remains unchanged.
+
+## Guided KISS frame editing
+
+The application and MCP panel share the guided first/last frame → motion prompt → review/generate → results flow. First-frame defaults use headline-only on black. Ratio changes keep preview heights stable. The breadcrumbs replace the project-title step navigation.
+
+Use `animator_kiss_frame_read` with request/item/current revision to inspect original render layers and separate start/end frame properties. Use `animator_kiss_frame_save` with the returned source digest, every layer identity, the edited frame and a stable intent UUID. Keep position locked by default; explicitly unlock before changing x/y, uniform scale or rotation. Color and opacity changes are deterministic. Saving renders a new actual comparison, retains prior prompt history and invalidates approval. Submitted attempts stay immutable.
+
+Only image layers offer **Edit with prompt**, attached to the canvas selection gizmo. Save property edits first. Present the exact prompt, selected source image, Fal destination, `openai/gpt-image-2.5/flare/edit`, transparent PNG output and supported price (currently unavailable) before requesting separate paid-edit approval. Call `animator_kiss_frame_generate` with confirmed:true and a stable intent UUID only after that approval. `animator_kiss_frame_inspect` recovers the same operation without a new submission. Unknown outcomes never authorize a retry. The server rejects outputs without actual transparent alpha.
+
+Inspect the source/generated comparison and explicitly accept placement using `animator_kiss_frame_place`. It creates “original name — generated” at the source bounds; the original asset is retained and optionally hidden in that frame only. Placement requires the unchanged source revision. Redraft all affected image pairs and obtain fresh batch video approval. `animator_kiss_accept_output` records acceptance of a completed output revision; a retry creates a separate request and requires a fresh reviewed approval.
+
+These are KISS frame operations, not manual Animate project tools. MCP exposes no mode switch, Animate document, timeline or compositor export. The legacy whole-frame Ideogram edit remains available for compatibility and atomic-text edits; it is separate from image-layer duplicates.
