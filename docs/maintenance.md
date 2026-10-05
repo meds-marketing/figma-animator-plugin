@@ -35,3 +35,7 @@ A marketplace refresh changes instructions/icons; a server deploy changes tools/
 ## Version 0.3.7
 
 The plugin instructions follow the deployed KISS-only tools. Frame saves default to linked ratio updates; explicit per-ratio overrides remain available. Video retries preserve saved edited frame pairs and require fresh approval. Source copy and first-frame geometry must remain exact in H3 drafting. Projects and requests are shared internally, while preferences, quotas and approvals remain principal-bound. Animate documents and timelines are application-only.
+
+## Version 0.3.8
+
+Authorized organization-token connections may approve shared KISS requests created by another teammate. The current user’s explicit confirmation of the complete reviewed batch is sufficient; do not require the original requester or duplicate the request. Hosted MCP results expose authorization context; chat receipts record credential attribution without asserting human identity. Exact-input, revision, expiry, quota and submission checks remain in force. Host policy denials still apply.

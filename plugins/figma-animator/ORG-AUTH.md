@@ -14,6 +14,10 @@ Send `Authorization: Bearer <organization-key>`. The shared routes return a plai
 
 The registry binds each credential to an explicit `ownerEmail`. All authenticated internal app users can browse and edit shared saved requests and projects. Everyone using the same credential shares its configured owner's personal preferences and generation quota. Creator/editor attribution uses the authenticated email: personal OAuth identifies the person, while an organization key identifies only its configured `ownerEmail`. This is shared service access, not per-user identity or a grant based on membership inferred from a header. All existing and new project/request records are shared internally; do not grant a credential to someone who should not have this access. Client tool policies and exact-image/prompt approval before paid generation still apply. The server logs the bounded key ID and a hash of its owner, never a usable credential. Removing a member also requires removing their credential access; the key itself does not check the client's membership roster.
 
+## Approving shared requests
+
+An authorized organization connection can approve a shared request created by any teammate. The current user’s explicit confirmation after the complete exact-input review is sufficient; the original requester need not return. MCP results expose `authorization` with authentication type, credential ID, workspace scope and approval capability. Chat receipts record the approving credential ID and configured principal, plus a confirmation hash; they do not identify the human speaker or store raw confirmation text. Existing expiry, revision, digest, quota and duplicate-submission checks remain in force. A host policy denial still applies.
+
 ## Issue, install, rotate and revoke
 
 From the source repository:
