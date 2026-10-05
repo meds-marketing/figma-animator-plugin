@@ -31,3 +31,7 @@ Verify the matching backend serving revision first. Synchronize released skill/m
 Git-imported workspace plugins update through source sync. Verify the same entry's imported version; Plugin Creator cannot edit an externally managed entry. The main plugin package and native registered MCP app have separate availability states. Importing the Git marketplace does not create/enable a ChatGPT app or grant OAuth access. Never create duplicate plugins to hide an update error.
 
 A marketplace refresh changes instructions/icons; a server deploy changes tools/UI; a session reconnect refreshes the client's catalog. Verify all three separately. Public Git distribution is not OpenAI public-directory submission. No deployment, installed workspace version, authenticated provider execution or all-client compatibility is established by this documentation refresh.
+
+## Version 0.3.7
+
+The plugin instructions follow the deployed KISS-only tools. Frame saves default to linked ratio updates; explicit per-ratio overrides remain available. Video retries preserve saved edited frame pairs and require fresh approval. Source copy and first-frame geometry must remain exact in H3 drafting. Projects and requests are shared internally, while preferences, quotas and approvals remain principal-bound. Animate documents and timelines are application-only.

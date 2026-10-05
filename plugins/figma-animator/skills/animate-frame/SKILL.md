@@ -137,3 +137,13 @@ Only image layers offer **Edit with prompt**, attached to the canvas selection g
 Inspect the source/generated comparison and explicitly accept placement using `animator_kiss_frame_place`. It creates “original name — generated” at the source bounds; the original asset is retained and optionally hidden in that frame only. Placement requires the unchanged source revision. Redraft all affected image pairs and obtain fresh batch video approval. `animator_kiss_accept_output` records acceptance of a completed output revision; a retry creates a separate request and requires a fresh reviewed approval.
 
 These are KISS frame operations, not manual Animate project tools. MCP exposes no mode switch, Animate document, timeline or compositor export. The legacy whole-frame Ideogram edit remains available for compatibility and atomic-text edits; it is separate from image-layer duplicates.
+
+## Linked ratio edits and video recovery
+
+Frame saves default to `syncAcrossRatios: true`. Keep that default for changes intended for every included ratio; set it false for a deliberate per-ratio override. Inspect `sync.skipped` for missing or ambiguous matches, and review every affected frame pair before redrafting and approving. Position changes scale with canvas dimensions; generated-image placement remains explicitly reviewed per ratio.
+
+Use `animator_retry_video` only after a known completed, failed, or definitively blocked result, with request/item IDs, current item revision and a stable UUID `intentId`. Recover a lost response with that same intent. The new single-item request retains the saved frame pair, edits and prompt but requires fresh approval. Reconcile active or unknown submissions before retrying.
+
+Quote exact important source copy in H3 drafts, including headline, supporting text, CTA, product labels and legal copy. Compare pinned `textContents` with actual frame visibility. Preserve intact glyphs and avoid substitutions, morphing, flicker or invented lettering. Keep the supplied first-frame geometry exact at time zero; complete major reveals by five seconds and hold the supplied ending layout through fifteen seconds.
+
+Requests and projects are shared within the authenticated internal workspace, with creator/editor attribution. Preferences, quotas and approvals remain principal-bound.

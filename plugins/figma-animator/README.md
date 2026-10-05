@@ -45,3 +45,5 @@ Version 0.3.5 refreshes maintenance documentation alongside the hosted UI recove
 Distribution maintainers should also read [distribution maintenance](https://github.com/meds-marketing/figma-animator-plugin/blob/main/docs/maintenance.md).
 
 Version 0.3.6 adds the guided KISS frame editor, image-only Edit with prompt, generated duplicate placement and completed-output acceptance. Server deployment supplies the UI; refresh the package and reconnect the tool catalog for the new KISS capabilities. MCP remains KISS-only.
+
+Version 0.3.7 documents linked ratio edits, preserved-frame video retries, exact H3 source text, and shared internal projects with principal-bound approvals and quotas. MCP remains KISS-only.

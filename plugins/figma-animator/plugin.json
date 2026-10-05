@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "figma-animator",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Review KISS frame pairs, edit image layers and generate approved H3 animations.",
   "author": {
     "name": "Meds Marketing"
