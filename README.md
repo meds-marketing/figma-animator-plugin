@@ -113,8 +113,10 @@ Read the [MCP agent and media workflow](docs/mcp-agent-workflow.md) for source s
 
 See [distribution maintenance](docs/maintenance.md) for package variants, current first-frame/prompt behavior, backend ownership and release/client verification. Organization setup remains in [ORG-AUTH.md](plugins/figma-animator/ORG-AUTH.md).
 
-## Workflow guidance v0.3.10
+## Workflow guidance v0.3.11
 
 Read [animate-frame SKILL.md](plugins/figma-animator/skills/animate-frame/SKILL.md) first. It includes the bounded Runneth discovery procedure, duplicate source-set selection, per-ratio identity/revision tracking, one batch review, media delivery and recovery. Image edits and MiniMax H3 video generation stay within Figma Animator MCP. Nano Banana 2 is documented as a selectable whole-first-frame edit model; GPT Image remains the transparent-layer path.
 
 This distribution update publishes instructions and metadata. The matching backend must expose the documented model/search capabilities; publishing this repository does not deploy it or refresh an installed client.
+
+H3 completion guidance waits about 60 seconds before the first status read, then 30–60 seconds between whole-batch polls. It requires actual client wait/timer capability, preserves request identities and handles unknown submissions without duplicate generation.
