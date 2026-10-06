@@ -81,6 +81,13 @@ After `animator_generate_request` acknowledges submission, retain the existing r
 
 ### Deliver media in the initiating chat
 
+**Preview first, download second.** For each ratio, use the client's actually supported inline image/video rendering or media-attachment tool. Preserve `media.*.mimeType` and `media.*.filename` (or the returned result filename): video/mp4 with `.mp4`, image/png with `.png`, image/jpeg with `.jpg`/`.jpeg`. `presentation` describes intended media display, not proof of a host capability. Do not strip extensions, rename media to a generic extensionless artifact, force attachment/download disposition, or re-upload a usable playback URL as an untyped file. Provide the download link separately as an optional secondary action.
+
+Use native MCP image content for images where supported. If the client's documented renderer supports Markdown images, embed the actual returned image URL; Markdown image syntax is not a universal video embed. For video use the host's documented media player/attachment mechanism with the actual playback URL and MIME type. Do not invent `<video>`, a custom widget, or a Runneth tool/API merely because other clients support it. If inline rendering is unavailable or fails, state the observed limitation and supply a labeled browser playback link before a download-only fallback. A file card is not evidence of a playable preview: do not say "watch above" unless the host actually rendered a player. Check available client instructions/capabilities before downgrading; never assert that Runneth lacks previews based solely on generic file cards.
+
+Diagnose a delivery problem using the tool result's media MIME/filename and the client's attachment/renderer metadata if exposed. Figma Animator logs record tool identity/timing/outcome and bounded IDs, not response payloads, signed URLs, or client rendering. Those logs cannot prove an inline player was shown. Avoid logging credentials, private media URLs or full responses to diagnose presentation. Do not make private media public or regenerate a video to fix a display issue.
+
+
 Use native MCP image content and the returned `media.comparison.url`, start/end or video URLs. Associate each with its actual ratio/item. Workdir paths do not become client artifacts automatically; do not assume an artifacts directory or file-link widget exists in Runneth. Use a host-supported artifact tool only if actually exposed. If native display is unavailable, share the returned read link; if it expired, refresh the same request. If neither is usable, state what cannot be shown and pause visual approval. Do not claim an image was inspected or shown when it was not. No external review page is required.
 
 ## Match the initiating modality
