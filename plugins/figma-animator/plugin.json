@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "figma-animator",
-  "version": "0.3.13",
+  "version": "0.4.0",
   "description": "Read animate-frame skill first; create approved Nano Banana 2 or Ideogram first frames and H3 videos through Figma Animator MCP.",
   "author": {
     "name": "Meds Marketing"
