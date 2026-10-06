@@ -1,3 +1,5 @@
+> Version 0.4.0 adds the enabled hybrid default. Read [hybrid composition](hybrid-composition.md) and the bundled animate-frame skill before using the legacy KISS procedures below. Server capabilities remain authoritative.
+
 # Figma Animator MCP agent instructions
 
 Canonical operating guidance for chat-led, app-led and mixed workflows. Connected tool schemas remain authoritative.

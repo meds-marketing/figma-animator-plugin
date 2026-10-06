@@ -1,3 +1,5 @@
+> Version 0.4.0 adds the enabled hybrid default. Read [hybrid composition](hybrid-composition.md) and the bundled animate-frame skill before using the legacy KISS procedures below. Server capabilities remain authoritative.
+
 # Plugin distribution maintenance
 
 Snapshot: October 2, 2026, base commit `35eb998175b0f219cbc04b8a61adb1e864f2f8f8`. This repo distributes client manifests, instructions, icons, examples and packaging helpers. It does not deploy the Figma Animator service or ship its browser UI. Backend recovery/filter changes are local in the sibling service checkout at this snapshot.

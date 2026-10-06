@@ -113,7 +113,13 @@ Read the [MCP agent and media workflow](docs/mcp-agent-workflow.md) for source s
 
 See [distribution maintenance](docs/maintenance.md) for package variants, current first-frame/prompt behavior, backend ownership and release/client verification. Organization setup remains in [ORG-AUTH.md](plugins/figma-animator/ORG-AUTH.md).
 
-## Workflow guidance v0.3.13
+## Workflow guidance v0.4.0
+
+Enabled testing deployments default new MCP requests to hybrid composition: H3 generates clean backgrounds while original text and SVG units use exact frame tracks. A shared 16:9 background can serve multiple actual source layouts only after each ratio passes temporal vision review. Overlay and crop revisions reuse saved footage; changed paid inputs need fresh approval. Explicit whole-frame KISS remains available.
+
+Read [hybrid implementation and proof boundaries](docs/hybrid-composition.md). The skill explains capability discovery, typed recipes, native media inspection, per-ratio vision receipts and editable Animate handoff.
+
+### Earlier guidance retained
 
 Read [animate-frame SKILL.md](plugins/figma-animator/skills/animate-frame/SKILL.md) first. It includes the bounded Runneth discovery procedure, duplicate source-set selection, per-ratio identity/revision tracking, one batch review, media delivery and recovery. Image edits and MiniMax H3 video generation stay within Figma Animator MCP. Nano Banana 2 is documented as a selectable whole-first-frame edit model; GPT Image remains the transparent-layer path.
 
