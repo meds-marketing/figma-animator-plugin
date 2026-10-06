@@ -11,7 +11,7 @@ codex plugin marketplace add meds-marketing/figma-animator-plugin
 codex plugin add figma-animator@figma-animator
 ```
 
-Sign in through the MCP Google OAuth flow. Previews and approval stay in the inline workspace in ChatGPT, or ordinary chat in tools-only clients.
+Sign in through the MCP Google OAuth flow. Chat and the interactive workspace are complete review and approval paths. Open the animate-frame skill before selecting tools; chat-led work stays in chat even when a panel is available.
 
 ## Claude Code
 
@@ -112,3 +112,9 @@ Build `python3 scripts/package-plugin.py --org-auth` or download `figma-animator
 Read the [MCP agent and media workflow](docs/mcp-agent-workflow.md) for source selection, frame editing, prompt drafting, batch approval and recovery.
 
 See [distribution maintenance](docs/maintenance.md) for package variants, current first-frame/prompt behavior, backend ownership and release/client verification. Organization setup remains in [ORG-AUTH.md](plugins/figma-animator/ORG-AUTH.md).
+
+## Workflow guidance v0.3.10
+
+Read [animate-frame SKILL.md](plugins/figma-animator/skills/animate-frame/SKILL.md) first. It includes the bounded Runneth discovery procedure, duplicate source-set selection, per-ratio identity/revision tracking, one batch review, media delivery and recovery. Image edits and MiniMax H3 video generation stay within Figma Animator MCP. Nano Banana 2 is documented as a selectable whole-first-frame edit model; GPT Image remains the transparent-layer path.
+
+This distribution update publishes instructions and metadata. The matching backend must expose the documented model/search capabilities; publishing this repository does not deploy it or refresh an installed client.

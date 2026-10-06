@@ -39,3 +39,7 @@ The plugin instructions follow the deployed KISS-only tools. Frame saves default
 ## Version 0.3.8
 
 Authorized organization-token connections may approve shared KISS requests created by another teammate. The current user’s explicit confirmation of the complete reviewed batch is sufficient; do not require the original requester or duplicate the request. Hosted MCP results expose authorization context; chat receipts record credential attribution without asserting human identity. Exact-input, revision, expiry, quota and submission checks remain in force. Host policy denials still apply.
+
+## October 6 instruction update (v0.3.10)
+
+The public skill and agent workflow guide are synchronized with the backend source guidance. New instructions cover complete chat/app workflows, bounded Runneth source discovery, exact multi-ratio batch handling, duplicate-set disambiguation, and Nano Banana 2 whole-frame edits. Package builds validate manifests and archive contents; backend deployment and installed-client behavior are separate gates.

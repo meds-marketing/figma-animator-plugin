@@ -1,7 +1,7 @@
 {
   "name": "figma-animator",
-  "version": "0.3.8",
-  "description": "Review KISS frame pairs, edit image layers and generate approved H3 animations.",
+  "version": "0.3.10",
+  "description": "Read animate-frame skill first; create approved Nano Banana 2 or Ideogram first frames and H3 videos through Figma Animator MCP.",
   "author": {
     "name": "Meds Marketing"
   },
@@ -12,7 +12,7 @@
   "interface": {
     "displayName": "Figma Animator",
     "shortDescription": "Review and animate frames",
-    "longDescription": "Open the Figma library, select real variants, compose start frames and review exact H3 prompts in one saved animation workspace. Follow batch progress, reopen results and use explicit chat confirmation in clients without custom UI.",
+    "longDescription": "Read the animate-frame skill first. Discover exact Figma variants, edit first frames with Nano Banana 2 or Ideogram, and generate reviewed MiniMax H3 videos through Figma Animator MCP, with explicit paid approvals and durable recovery.",
     "developerName": "Meds Marketing",
     "category": "Creativity",
     "capabilities": [

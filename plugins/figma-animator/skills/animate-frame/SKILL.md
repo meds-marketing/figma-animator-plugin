@@ -1,15 +1,84 @@
 ---
 name: animate-frame
-description: Discover Figma variants, compose start frames, draft motion plans, and execute approved H3 animations with one live inline workspace in UI hosts and chat confirmation in tools-only hosts.
+description: Read this skill first for Figma static-ad animation and first-frame image editing. Use Figma Animator MCP for Nano Banana 2 or Ideogram image edits and MiniMax H3 video generation; do not route to Higgsfield or integrations-cli.
 ---
 
 # Figma animation capabilities
+
+## Read this skill before choosing a generation integration
+
+For a Figma static ad, first open this installed `skills/animate-frame/SKILL.md` and follow it. Discovery, first-frame image editing and video generation all occur through **Figma Animator MCP**. The Animator backend calls Fal using its configured credentials and saves operations, outputs and approvals. The agent calls Animator tools; it does not use raw Fal calls, Higgsfield, integrations-cli or a brain-index search to select a separate animation provider merely because an API key is available. Read current tool schemas to confirm availability. If this skill is unavailable in a client, use the server's matching instructions and schemas and report that limitation.
+
+| Task | Animator tool | Model / provider contract |
+| --- | --- | --- |
+| Keep/hide existing source content | `animator_prepare_request` / `animator_prepare_frames` | Deterministic Figma composition; no generation model |
+| Edit whole design into a first frame | `animator_edit_first_frame` | `model: "fal-ai/nano-banana-2/edit"` for Nano Banana 2 or `model: "ideogram/v4.5/edit"` for Ideogram. Paid, separately approved. |
+| Edit isolated image layer | `animator_kiss_frame_generate` → inspect → place | GPT Image 2.5 Flare; actual transparent alpha required. Nano Banana 2 is supported for whole frames, not this alpha-layer path. |
+| Animate reviewed first/last pair | `animator_generate_request` after exact review and confirmation | Fal `minimax/h3-max/image-to-video`, 15 seconds, 1080P. |
+
+Nano Banana 2 is an image edit model, not the video model. The backend supplies `image_urls`, `aspect_ratio: "auto"`, `resolution: "2K"`, `output_format: "png"`, `num_images: 1` and disables web search. Agents supply the tool's `model`, exact prompt, real `planId`, current item `expectedRevision` and separately approved `confirmed:true`; do not pass raw provider fields to the MCP tool. Omitting model preserves a saved operation's model, or defaults a new edit to Ideogram. Switching models requires a newly reviewed operation; do not switch during recovery.
+
+Example: inspect the exported AD-4859-C1-V2 artwork, present the exact first-frame prompt and disclosure to Fal Nano Banana 2, obtain approval, then call `animator_edit_first_frame` with its actual plan ID/revision and `model: "fal-ai/nano-banana-2/edit"`. Inspect the returned first/last comparison, draft H3 motion, and request separate video approval.
+
 
 Build a workflow from the user's intent. Headline-only is a default composition, not a mandatory workflow. One animation request can hold one or many independently reviewed variants.
 
 The MCP surface is KISS-only: Library source browsing, animation requests, motion drafts, exact-input approval, generation history and preferences. Manual layer-animation projects, project edit operations and compositor export belong to the authenticated web application and are unavailable through MCP discovery or invocation. Compatibility tools such as animator_animate_frame operate only on KISS plans.
 
 The client can authenticate with personal OAuth or an administrator-provisioned organization key. Organization keys bind all users to the configured shared owner and quota. Use the client's existing connection; do not ask users for Google authorization when a shared key is configured, and never ask them to paste keys into chat. The `/mcp/tools` endpoint and local stdio bridge have no UI dependency: present images and exact prompts in ordinary chat. Credential setup is documented in `../../ORG-AUTH.md`; authentication does not approve exports or paid generation.
+
+## Runneth and other tools-only clients: bounded operating procedure
+
+Do not narrate credential hunting, speculative tool selection or repeated searches. Start with a short useful status, use the connected Figma Animator tools, then report a saved outcome or one specific blocker. Another provider key is not permission or a reason to change the workflow. No brain-index lookup, generic integrations skill or external ad-library comparison is needed for a named Figma ad. If Animator tools are absent, report that the Animator connection/skill must be enabled in this client; do not invent tools or work around a client policy denial.
+
+### Find the exact creative without a search loop
+
+For `StatiqClub-Batch83-AD-4859-C1-V2`, preserve **StatiqClub / Batch83 / AD-4859 / C1 / V2** as the requested identity. Keep exact frame names and source IDs returned by Figma. Ratio suffixes such as `-9:16`, `-1x1` or `-16X9` identify actual sibling layouts, not versions. Separator differences such as C1-V2 and C1V2 are normalized by family search; do not repeatedly guess punctuation variants.
+
+1. Call `figma_search_frames` with the full supplied name and `family:true`, plus `fileUrl` if the user supplied one. Family search matches the complete family name after stripping a ratio suffix and normalizing separators; it is not a prefix search.
+2. If successful but empty, make one query for `AD-4859-C1-V2` with `family:true`. This handles frames stored without the campaign/batch prefix. Retain requested batch context when evaluating matches; names without a batch do not prove membership in Batch83.
+3. Only if still empty, make one bounded fallback using `AD-4859` or `Batch83` with `family:false`; inspect its returned matches and filter for the exact C1/V2 and batch context. Do not try unrelated ads such as AD-5. If `truncated:true`, use a discovered file/page/parent scope to narrow the same query before selecting; the visible page is not a complete result inventory.
+4. If no verified candidate remains, stop and ask for the Figma design link or specific source-set context. Search only covers configured connected files or the supplied file. Do not enumerate unrelated history, settings or files to guess where the design lives. `animator_list_requests` is for resuming an existing animation, not locating new Figma sources. `animator_read_preferences` is app-only and must not be invoked by the agent.
+
+An empty successful result is not a transient error; change scope as above rather than repeat it. An `isError`, timeout or missing content is not evidence of zero matches. Inspect the actual error. Retry the identical read at most once after a short backoff only for an explicitly transient network/429/5xx failure; honor Retry-After. On repeated failure, state the failed tool, visible error and required next step. Authentication, permission, invalid-input and unavailable-tool errors require resolving that specific condition, not retries or changing providers. Missing images require media recovery, not guessed visual analysis. Never retry a possibly accepted write with a new request/intent ID.
+
+### Resolve duplicate sets once, before creating work
+
+Use returned `families` and `matches` to group by **fileKey + pageId + parentId**, then map each distinct frameId to its ratio/dimensions. Repeated delivery of the same frameId is one source; distinct frame IDs with similar names or identical previews remain separate sources. Do not mix 9:16 from one duplicate parent with 1:1 or 16:9 from another.
+
+If several plausible source sets remain, inspect bounded previews with `figma_list_ad_sets` using the actual fileUrl, pageId and candidate frameIds (maximum 24 per call). Grouped preview output may contain several parents: keep your source-set table from the search identities. Tiny thumbnails are not proof that artwork or disclaimers are identical; use actual inspected exports if detail matters. Do not infer which copy is newer from larger node IDs, parent numbering, search order or visual similarity. A Meta crop is neither source-set identity nor evidence of a missing ratio. Do not silently recommend the "newer" set on that basis.
+
+Present one concise choice with neutral labels, actual parent/page names or IDs, available ratios, source links/previews and only verified differences. Example: "Two distinct C1/V2 source sets remain, both with 9:16, 1:1 and 16:9. Their previews look similar; I cannot establish which is canonical. Use set A [source reference] or set B [source reference]?" Ask once and wait before creating/preparing either set. If the user explicitly approves a documented default or chooses by a source link, record that choice. Unpaid preparation does not justify choosing an ambiguous source on the user's behalf.
+
+### Execute all chosen aspect ratios as one batch
+
+For a request naming one creative without a ratio restriction, include all actual available ratios **from the selected source set**. State the included ratios and any missing variants; do not crop or synthesize a ratio. If a parent holds multiple distinct candidate frames for the same ratio, resolve that ambiguity rather than taking the first. For more than the 24-frame request limit, agree a bounded batch; never silently omit frames.
+
+Maintain a per-item ledger: ratio/dimensions, fileUrl, pageId, frameId, requestId, itemId, planId, item revision, comparison digest, readable motion, exact prompt and status. Request revision and item revision are different fences. Never copy a node ID, planId, image digest or revision from one ratio to another.
+
+| Current state | Next action | Stop / recovery rule |
+| --- | --- | --- |
+| Source selected, no request | `animator_create_request` once with every selected source frame and one stable idempotencyKey | Recover uncertain creation with identical key/payload; no per-ratio request splitting. |
+| Request unprepared | Read once, then `animator_prepare_request` once for all pending items | Let running preparation finish; retain failures and do not call a partial batch ready. |
+| Actual pairs ready | Inspect each comparison, record/reuse one motion intent, `animator_draft_request` with each target's own revision/digest | One coherent choreography adapted to each actual layout; no unseen-image drafting. |
+| First frame needs generated changes | Present exact image/prompt/model for each affected item, obtain separate paid image-edit approval, call `animator_edit_first_frame` per actual plan | Keep one parent set; recover each paid operation with same plan/revision/prompt/model. Nano Banana 2 edits images; H3 generates video. |
+| Entire chosen batch ready | Show all actual pairs, per-item readable/exact prompts, settings, destinations and price availability in chat | Wait for explicit approval; initial "animate this" does not approve paid image edits or videos. |
+| Exact video review approved | `animator_confirm_generation` once with the actual reply and displayed complete review, then `animator_generate_request` once | No per-ratio approval loops; stale inputs require refreshed review. |
+| Jobs running / partial results | Read the existing request with bounded polls; return actual media and per-ratio outcomes | No invented ETA, closed-chat monitoring or duplicate submissions. Unknown submission means inspect/reconcile. |
+
+Finish reveals by 5s and hold the actual ending through 15s unless the user requests different choreography. Preserve each ratio's native composition and exact text; matching visual intent does not mean reusing identical geometry or a generic prompt. Keep every included item visible through failures, revision and approval. One failed ratio is not authorization to generate an unstated subset. User-requested frame property saves can link matching layers across ratios; generated image placement remains explicit for each affected ratio.
+
+### Deliver media in the initiating chat
+
+Use native MCP image content and the returned `media.comparison.url`, start/end or video URLs. Associate each with its actual ratio/item. Workdir paths do not become client artifacts automatically; do not assume an artifacts directory or file-link widget exists in Runneth. Use a host-supported artifact tool only if actually exposed. If native display is unavailable, share the returned read link; if it expired, refresh the same request. If neither is usable, state what cannot be shown and pause visual approval. Do not claim an image was inspected or shown when it was not. No external review page is required.
+
+## Match the initiating modality
+
+Chat, the interactive MCP app and the plugin are complete interfaces to the same request. Do not require app navigation for chat-led work, even when a panel is available. The default journey is select → review → generate → results; carry unpaid preparation, actual-image inspection and agent drafting without asking the user to operate internal stages.
+
+For a request or change in chat, reply in chat with the saved outcome, actual media, motion and per-ratio exceptions. Include every actual frame pair, readable plan, exact saved prompt, selected count, fixed settings, destinations and expiry before paid approval. An app card is optional supporting presentation. Explicit chat approval uses animator_confirm_generation in every host. Do not substitute “open the workspace to continue” for a complete response.
+
+For direct app edits, the app provides saving, saved state and exceptions. Routine selection/status refreshes need no chat messages. An app-origin motion instruction intentionally hands work to the agent; explain the saved result in chat while the same panel updates. Switching surfaces never creates a duplicate request or expands approval scope. Native mentions, fullscreen and host messages are optional capabilities, not prerequisites for the ordinary tool/chat path.
 
 ## Open, resume, and configure the workspace
 
@@ -23,7 +92,7 @@ The client can authenticate with personal OAuth or an administrator-provisioned 
 
 ## Discover and inspect
 
-- Use figma_search_frames when a user names a frame. For "all available aspect ratios," supply family:true to match the shared creative name without its ratio suffix. Use actual Figma frames; never crop one source to invent a missing variant. Read dimensions and file/page/parent context. Resolve duplicate names or versions with the user; do not silently choose V4 over V2. Saved Animator projects are unrelated to discovery.
+- Use figma_search_frames when a user names a frame. Preserve the full creative/version identity: for AD-4859-C1-V2-9:16 search frameName:"AD-4859-C1-V2", family:true to discover its actual ratio siblings. A broader AD-4859 search is a fallback; filter and resolve the discovered C/V versions before selecting. For "all available aspect ratios," supply family:true to match the shared creative name without its ratio suffix. Use actual Figma frames; never crop one source to invent a missing variant. Read dimensions and file/page/parent context. Resolve duplicate names or versions with the user; do not silently choose V4 over V2. Saved Animator projects are unrelated to discovery.
 - A search covers configured connected files, or the supplied fileUrl. If no files are indexed, ask only for a design link. Do not demand page or frame IDs from the user.
 - Use figma_get_frame to inspect composition.layers before selecting a custom start. It exposes node IDs, bounds, image fills, text descendants, hierarchy, and unsupported dependencies. IMAGE fills can belong to RECTANGLE nodes. A group may include the product and text. Do not infer a product cutout from a flattened photograph.
 
@@ -32,9 +101,9 @@ The client can authenticate with personal OAuth or an administrator-provisioned 
 1. Call animator_create_request ONCE with an optional shared brief and explicit frames: [{fileUrl,pageId,frameId}], for a single frame or a whole batch. Record requestId and itemIds. In ChatGPT and other MCP Apps hosts, this call opens the single live inline workspace automatically. Never split a multi-ratio batch into separate requests or panels. To edit membership or brief, use animator_update_request with the current expectedRevision; it updates the existing workspace without opening another.
 2. Read animator_get_animation_request once before preparation. The inline panel automatically prepares headline-only first frames and full-design last frames for a new request. Reuse those prepared pairs; if preparation is running, let it finish. If the request still has unprepared items and no preparation is running, call animator_prepare_request ONCE with requestId, the current request expectedRevision, and startPreset: headline_only unless the user explicitly requested a custom composition. It prepares ALL pending frames with server concurrency two and reuses already prepared pairs. Do not require the user to prepare each frame or create a separate request for each ratio. Keep preparationFailures visible and resolve them before calling the entire batch ready; hosted review inputs are cached privately in the Animator account-scoped GCS folder with a 24-hour approval window. Preparation returns expiring read links to private media, never public bucket access or a Fal request. For an intentional individual composition edit, use animator_prepare_frames with requestId/itemId, the current item expectedRevision, and startFrame with explicit includeNodeIds and background. Supported presets are headline_only, image_only and selected_layers; image_only requires explicit selection and rejects text descendants. Background choices are solid with #RRGGBB, supported frame_fill, or selected_layers with nodeIds. The server rejects unsupported masking/blending dependencies. Selecting an enclosing group preserves supported internal rendering. Selected content stays at its source position on the entire source canvas.
 3. Inspect EVERY actual comparison image returned together by animator_prepare_request. Each image is labeled with its itemId and digest; preserve that association. LEFT is the selected start; RIGHT is the full end design. Do not invent visual details or continue with unseen/unavailable images.
-4. In ChatGPT and other MCP Apps hosts, use the panel opened by animator_create_request for previews, selection, composition edits and approval. Preparation, drafting, generation and status return data and update that panel. DO NOT also call animator_show_animation_review after creation, preparation or drafting. Reopen it only if the user explicitly asks, or for a legacy standalone plan with no panel. Never repeat preparation just to refresh progress. Without panel support, use the media delivery rules below.
+4. Use the existing panel for app-led selection, composition edits and approval; for chat-led work present the actual comparisons and review directly in chat, whether or not a panel is available. Preparation, drafting, generation and status return data and update that panel. DO NOT also call animator_show_animation_review after creation, preparation or drafting. Reopen it only if the user explicitly asks, or for a legacy standalone plan with no panel. Never repeat preparation just to refresh progress. Without panel support, use the media delivery rules below.
 
-## Clients without inline panels
+## Media delivery and complete chat review in every client
 
 - Share direct media URLs from media.comparison.url, media.startFrame.url, media.endFrame.url, and media.video.url when available. Each prepared request item has its own media links. Include the motion plan, exact H3 prompt and fixed settings as ordinary chat text.
 - Never send or construct an /mcp/review/ page link as a fallback, including /mcp/review/request/ links. Do not replace an unavailable media link with a review page.
@@ -43,7 +112,9 @@ The client can authenticate with personal OAuth or an administrator-provisioned 
 
 ## Draft against each actual image pair
 
-Call animator_draft_request ONCE with requestId, the current request expectedRevision, duration:15, resolution:"1080P", and drafts for ALL items. Each draft contains itemId, the current item expectedRevision, imageDigests.comparison as imageDigest, and TWO separate strings:
+Read current motionRevisionIntents after preparation. If the app already recorded a matching pending intent, fulfill that exact intent rather than create another. Otherwise call animator_request_motion_revision with the current request expectedRevision, a stable UUID intentId, target itemIds, change and surface:chat. Retain the returned intent identity: concurrent surfaces may deduplicate to an existing pending instruction. This records unpaid work, not a provider request. Inspect every actual target comparison. A failed handoff can be redelivered with the same intent and unchanged baseline; a superseded intent requires reading the changed inputs and creating fresh work.
+
+Call animator_draft_request ONCE with the returned intentId, requestId, the current request expectedRevision, duration:15, resolution:"1080P", and drafts for ALL intent target items. An initial request targets every included item; an intentional revision targets only affected items so other saved drafts remain intact. Partial target completion stays pending until every intended target resolves. Retain the exact payload and intent for recovery after a lost save response. Each draft contains itemId, the current item expectedRevision, imageDigests.comparison as imageDigest, and TWO separate strings:
 
 - reviewPlan: concise user-facing choreography, reveal order, timing, product emphasis and final hold.
 - generationPrompt: direct, complete visual instructions for H3, adapted to the actual start/end composition and orientation. Describe the 15-second sequence and readable ending. Preserve the wording, typography, labels and final composition. Do not promise perfect text fidelity. Include no reasoning sections, serialized analysis, tool transcripts, approval instructions or agent commentary.
@@ -66,7 +137,7 @@ Use image-relative wording such as "Keep the headline exactly where it appears i
 
 Reuse a shared creative direction across variants, but adapt reveals, positions and framing to each exported layout. Never submit the comparison as a first/end image. No Fal analysis request is needed.
 
-Present ALL actual frame pairs, their motion plans and EXACT H3 prompts together in ONE batch review, with 15-second / 1080P settings, selected video count and exact GCS/Fal destinations inside the existing inline panel for ChatGPT and other UI hosts, or ordinary chat for tools-only hosts. Never replace inline preview/approval buttons with review links. Ask for ONE approval covering the entire displayed batch. Never require individual frame preparation or individual frame approvals. Keep missing exports and draftFailures visible; do not silently approve only the successful subset. STOP and wait for explicit user approval. The initial request to animate is not approval of a later draft.
+Present ALL actual frame pairs, their motion plans and EXACT H3 prompts together in ONE batch review, with 15-second / 1080P settings, selected video count and exact GCS/Fal destinations in ordinary chat for chat-led work in every host, or inside the existing panel for app-led review. A panel is never required for detailed review or explicit chat approval. Never replace inline preview/approval buttons with review links. Ask for ONE approval covering the entire displayed batch. Never require individual frame preparation or individual frame approvals. Keep missing exports and draftFailures visible; do not silently approve only the successful subset. STOP and wait for explicit user approval. The initial request to animate is not approval of a later draft.
 
 ## Approve the complete batch once in chat
 
@@ -122,7 +193,7 @@ Library shows actual document pages, top-level artboard sets, and their availabl
 
 ## First frames that need design changes
 
-Use layer composition when the request only keeps or hides existing objects. If it needs rewriting part of an atomic text node, moving or redrawing artwork, or another change to the exported design, use `animator_edit_first_frame` instead. Inspect the actual exported design and construct an Ideogram editing prompt from the user intent. Specify what changes, exact replacement text, what stays fixed, and that the canvas, proportions, typography and unaffected artwork must be preserved. Show the exact prompt and explain that the exported private Figma frame will be sent to Fal's `ideogram/v4.5/edit` for a paid image edit. Obtain the user's confirmation before setting `confirmed:true`; approval to export or generate a video is not approval for this separate image edit.
+Use layer composition when the request only keeps or hides existing objects. If it needs rewriting part of an atomic text node, moving or redrawing artwork, or another change to the exported design, use `animator_edit_first_frame` instead. Inspect the actual exported design and construct a model-specific editing prompt from the user intent. Specify what changes, exact replacement text, what stays fixed, and that the canvas, proportions, typography and unaffected artwork must be preserved. Show the exact prompt and explain that the exported private Figma frame will be sent to Fal's selected `fal-ai/nano-banana-2/edit` or `ideogram/v4.5/edit` model for a paid image edit. Obtain the user's confirmation before setting `confirmed:true`; approval to export or generate a video is not approval for this separate image edit.
 
 Pass the item's `planId`, current plan `expectedRevision`, and approved `prompt`. The tool exports the full original frame and uses high precision, medium quality, one image and `image_size:auto`. Exact pixel dimensions are checked; same-proportion provider downscales are restored to the input size and marked as normalized. A changed aspect ratio is rejected. While pending, repeat the exact same plan, revision and prompt to inspect the existing job. A submitting/unknown result must not be retried with a fresh operation.
 
@@ -130,7 +201,7 @@ After completion, read the existing request and inspect the actual edited first/
 
 ## Guided KISS frame editing
 
-The application and MCP panel share the guided first/last frame → motion prompt → review/generate → results flow. First-frame defaults use headline-only on black. Ratio changes keep preview heights stable. The breadcrumbs replace the project-title step navigation.
+The application and MCP panel share a single canvas-and-motion workspace followed by exact paid batch review and results. Preparation is automatic. Host-agent drafting is automatic after actual comparisons exist; standalone web model drafting remains an explicitly disclosed paid action, with manual exact-prompt editing available. First-frame defaults use headline-only on black. Ratio changes keep preview heights stable. The breadcrumbs replace the project-title step navigation.
 
 Use `animator_kiss_frame_read` with request/item/current revision to inspect original render layers and separate start/end frame properties. Use `animator_kiss_frame_save` with the returned source digest, every layer identity, the edited frame and a stable intent UUID. Keep position locked by default; explicitly unlock before changing x/y, uniform scale or rotation. Color and opacity changes are deterministic. Saving renders a new actual comparison, retains prior prompt history and invalidates approval. Submitted attempts stay immutable.
 
@@ -149,3 +220,7 @@ Use `animator_retry_video` only after a known completed, failed, or definitively
 Quote exact important source copy in H3 drafts, including headline, supporting text, CTA, product labels and legal copy. Compare pinned `textContents` with actual frame visibility. Preserve intact glyphs and avoid substitutions, morphing, flicker or invented lettering. Keep the supplied first-frame geometry exact at time zero; complete major reveals by five seconds and hold the supplied ending layout through fifteen seconds.
 
 Requests and projects are shared within the authenticated internal workspace, with creator/editor attribution. Preferences, quotas and approvals remain principal-bound.
+
+## Continuing in Animate
+
+MCP does not expose manual timeline or compositor operations. When the user wants to continue editing a completed output, offer the signed-in application handoff with the exact request/item identities: https://figma.meds-marketing.dev/#kiss/<requestId>?item=<itemId>&continue=animate. Use actual discovered UUIDs only, with no credentials or signed media URL in the link. The application asks before importing a rendered video asset into an Animate project. Explain that trim, placement and asset motion are editable; generated motion does not become editable source-layer animation. Opening this link does not authorize generation or export. Video approval and “Mark accepted” editorial acceptance remain separate.
