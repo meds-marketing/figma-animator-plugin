@@ -51,6 +51,24 @@ Example recipe shape (replace placeholders with returned IDs; do not send litera
 
 For three ratios, include all three items and explicit component targets. Each retains native foreground layout. If center crop fails vision, try an unpaid anchor adjustment, retain a separate source unit, or propose a separately approved master for that ratio. Do not enforce shared footage when it damages the creative. Existing Animate tools remain available for advanced manual text preparation, video controls and supported source extraction; unsupported effects should be reported from current capabilities, never silently flattened or made into a permanent creative prohibition.
 
+## Compose the scene with base motion-policy
+
+For base-style animation, use `recipe.motionPolicy` in `animator_draft_composition`. Read the deployed `animator_composition_capabilities.motionPolicy` first; current schemas are authoritative. The base has no bounce, springs, scale pop or rotation. It compiles into ordinary editable animation clips, not a choreography inspector.
+
+Compose unique named clips with roles hook/claim/benefit/offer/cta/brand/legal/visual and actual per-ratio targets `{itemId,objectIds}`. Combine fragments by concatenating their clips; use `after:{clipId,event:"end",gapFrames}` across fragments. Event end includes the preceding reading hold, settled is entrance completion, and start is entrance start. Alternatively pin startFrame; do not specify both. Set integer durationFrames, holdFrames and staggerFrames when the brief needs deliberate overrides. Effects are none/fade/rise/slide/reveal. None stays visible from frame zero; use fade for a delayed reveal. The base keeps hooks/legal stationary, gently raises supporting copy and fades other information; related source layers can stagger.
+
+Default sequencing follows the previous information clip's reading hold. Longer text receives a larger estimated hold. These are editable heuristics: retain explicit short holds and report their warnings. Do not promise comprehension or hide conflicts by automatically compressing the schedule. Reading holds are distinct from entrance duration and delay. Movement distances use each ratio's actual bounds.
+
+Every clip should bind every intended ratio with its own actual object IDs. Missing bindings are explicit warnings; use separate ratio fragments for intentional variations. One policy clip owns each source object. Keep policy-owned objects out of `items[].motion`; custom tracks can own other objects. Do not animate a source unit that a generated background replaces. Whole-layer stagger is not word/grapheme splitting; native fine-grained preparation remains an explicit Animate capability.
+
+Example policy shape inside the existing recipe (replace placeholders with actual IDs, and keep all recipe items/background components):
+
+```json
+{"schemaVersion":1,"style":"base","clips":[{"id":"hook","role":"hook","targets":[{"itemId":"<actual item UUID>","objectIds":["<headline ID>"]}],"holdFrames":36},{"id":"claim","label":"Read the claim","role":"claim","targets":[{"itemId":"<actual item UUID>","objectIds":["<claim ID>"]}],"after":{"clipId":"hook","event":"end","gapFrames":6}},{"id":"benefits","role":"benefit","targets":[{"itemId":"<actual item UUID>","objectIds":["<first benefit ID>","<second benefit ID>"]}],"after":{"clipId":"claim","event":"end","gapFrames":9},"staggerFrames":4}]}
+```
+
+Review returned `motionPolicy.clips` and `motionPolicy.warnings`: explain the information order, when elements settle, their reading pauses and intentional overlaps in chat. Inspect all actual animatics before approval. Revise the authored policy with the current expectedRevision; do not copy generated execution tracks back onto the same policy objects. Overlay-only revisions reuse valid footage, but visible changes still require current temporal vision approval. Manual app clip changes are retained as customized tracks and protected by existing project-generation fences; do not overwrite newer manual edits.
+
 ## Runneth and other tools-only clients: bounded operating procedure
 
 Do not narrate credential hunting, speculative tool selection or repeated searches. Start with a short useful status, use the connected Figma Animator tools, then report a saved outcome or one specific blocker. Another provider key is not permission or a reason to change the workflow. No brain-index lookup, generic integrations skill or external ad-library comparison is needed for a named Figma ad. If Animator tools are absent, report that the Animator connection/skill must be enabled in this client; do not invent tools or work around a client policy denial.

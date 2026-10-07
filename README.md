@@ -42,6 +42,10 @@ python3 scripts/package-plugin.py --app-id asdk_app_YOUR_REGISTERED_APP_ID
 
 Use the actual technical ID (32 hexadecimal characters after `asdk_app_`). The resulting `dist/figma-animator.zip` contains an `.app.json` binding and no MCP declarations. Upload it into the account or workspace that has access to that app. No stale app ID is included here.
 
+## Base motion policy (0.5.0)
+
+Hybrid composition supports a composable `recipe.motionPolicy`: named source-layer clips, information roles, reading holds, stagger and timing dependencies. The base style uses restrained fade, rise, slide and reveal with no bounce. Each ratio binds its own actual source objects. The primary Animate app shows ordinary editable clips on its existing timeline. Read [the motion-policy contract](docs/motion-policy.md) and the animate-frame skill before drafting.
+
 ## Animation workflow
 
 1. Discover actual frames and aspect-ratio variants, resolve version ambiguity, and inspect exportable layers.
