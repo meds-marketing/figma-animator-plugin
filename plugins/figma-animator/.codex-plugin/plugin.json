@@ -1,6 +1,6 @@
 {
   "name": "figma-animator",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Read animate-frame skill first; create approved Nano Banana 2 or Ideogram first frames and H3 videos through Figma Animator MCP.",
   "author": {
     "name": "Meds Marketing"
@@ -8,7 +8,6 @@
   "homepage": "https://figma.meds-marketing.dev/mcp",
   "repository": "https://github.com/meds-marketing/figma-animator-plugin",
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Figma Animator",
     "shortDescription": "Review and animate frames",
@@ -23,5 +22,6 @@
     "defaultPrompt": "Animate a Figma ad across its available aspect ratios with reviewed compositions and exact prompts.",
     "logo": "./assets/icon.svg",
     "composerIcon": "./assets/icon.svg"
-  }
+  },
+  "apps": "./.app.json"
 }

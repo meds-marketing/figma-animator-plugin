@@ -1,3 +1,5 @@
+> Version 0.5.1 makes the Git-imported BlueChew plugin available on web through the registered Figma Animator MCP app. The marketplace source uses `.app.json`; desktop MCP declarations live under `packaging/desktop/` and are included only in desktop ZIPs. Each user connects their own OAuth account. The Git marketplace identity and existing workspace audience are preserved.
+
 # Figma Animator plugin
 
 Version 0.3.0 adds a Figma library, a saved animation workspace, frame references, preferences and responsive host styling. Sidebar/thread entrypoints and composer mentions depend on the connected host. Local manifest changes do not publish or update the hosted plugin binding. See [workspace contracts](https://github.com/meds-marketing/figma-animator/blob/dev/docs/mcp-workspace.md).

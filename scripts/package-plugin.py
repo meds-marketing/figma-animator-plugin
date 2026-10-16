@@ -29,9 +29,18 @@ def main():
     if not args.app_id:
         paths += [".claude-plugin/plugin.json", "bridge/mcp-stdio.cjs",
                   "examples/org-auth/codex.toml", "examples/org-auth/claude.mcp.json", "examples/org-auth/stdio.mcp.json"]
-        if not args.org_auth:
-            paths += ["mcp.json", ".mcp.json"]
     contents = {path: (SOURCE / path).read_bytes() for path in paths}
+    if not args.app_id:
+        root_manifest = json.loads(contents["plugin.json"])
+        root_manifest["extensions"]["com.openai"].pop("apps", None)
+        contents["plugin.json"] = encode_json(root_manifest)
+        desktop_overlay = json.loads(contents[".codex-plugin/plugin.json"])
+        desktop_overlay.pop("apps", None)
+        if not args.org_auth:
+            desktop_overlay["mcpServers"] = "./.mcp.json"
+            for name in ("mcp.json", ".mcp.json"):
+                contents[name] = (ROOT / "packaging" / "desktop" / name).read_bytes()
+        contents[".codex-plugin/plugin.json"] = encode_json(desktop_overlay)
     manifest = json.loads(contents["plugin.json"])
     interface = manifest["extensions"]["com.openai"]["interface"]
     for name in (".codex-plugin/plugin.json", ".claude-plugin/plugin.json"):

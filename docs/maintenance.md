@@ -45,3 +45,9 @@ Authorized organization-token connections may approve shared KISS requests creat
 ## October 6 instruction update (v0.3.10)
 
 The public skill and agent workflow guide are synchronized with the backend source guidance. New instructions cover complete chat/app workflows, bounded Runneth source discovery, exact multi-ratio batch handling, duplicate-set disambiguation, and Nano Banana 2 whole-frame edits. Package builds validate manifests and archive contents; backend deployment and installed-client behavior are separate gates.
+
+## October 16 web availability migration (v0.5.1)
+
+The imported `plugins/figma-animator` directory binds to registered app `asdk_app_6ad28c02de6c8191a5e5476c13f0edd7` at `https://figma.meds-marketing.dev/mcp`. The app is shared within BlueChew; users authorize their own account. Preserve workspace plugin `Plugin_92921c3a8c7c8191a25215d163572265` by syncing the existing `main` marketplace source.
+
+Root bundled MCP files are moved to `packaging/desktop/`, outside the imported plugin directory. The packaging script restores those files and removes the app binding for desktop ZIPs. For the web ZIP, pass the verified registered app ID with `--app-id`. Do not restore bundled MCP declarations in the marketplace folder, as that makes the imported plugin desktop-only.
