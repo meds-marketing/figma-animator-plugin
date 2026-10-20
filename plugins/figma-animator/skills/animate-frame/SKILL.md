@@ -27,6 +27,14 @@ New requests default to hybrid composition when `animator_composition_capabiliti
 
 The client can authenticate with personal OAuth or an administrator-provisioned organization key. Organization keys bind all users to the configured shared owner and quota. Use the client's existing connection; do not ask users for Google authorization when a shared key is configured, and never ask them to paste keys into chat. The `/mcp/tools` endpoint and local stdio bridge have no UI dependency: present images and exact prompts in ordinary chat. Credential setup is documented in `../../ORG-AUTH.md`; authentication does not approve exports or paid generation.
 
+## Choose motion before choosing generation
+
+Use `strategy:"deterministic"` and `components:[]` for simple reveals, fades, timed holds and source-layer motion. Draft exact tracks and render without paid generation or another approval. Keep source typography, logos, claims and legal copy in original pixels. A request such as “headline stays, product fades in, ingredients appear, CTA appears, hold” belongs on this path.
+
+Use hybrid for generated photographic or background movement combined with deterministic original foreground. Respect returned `motionConstraints`. A `fixedBackground:true` source-pixel import supports only opacity at original positions; its backdrop-dependent pixels cannot sit over a new generated background. Do not silently change to whole-frame generation on import failure.
+
+If the user says “I auto approve all” for this request, use their actual words with `approvalBasis:"delegated-request"` and the complete current review digest for any paid components. Inspect results yourself and continue to final delivery. Do not ask for a redundant human review at each step. Preserve actor, digest, quota and unknown-submission checks.
+
 ## Hybrid composition: default during testing
 
 Read `animator_composition_capabilities` first. The connected deployment is authoritative; an installed skill does not enable a server feature. When hybrid is disabled, explicitly explain the available whole-frame path rather than claiming deterministic timing. Existing requests keep their saved strategy.
